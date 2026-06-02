@@ -1,0 +1,4 @@
+<view class="card">
+  <text style="font-weight:700">智能推荐（占位）</text>
+  <text class="meta">后续可接入基于肤色/脸型的推荐算法与示例色卡</text>
+</view>

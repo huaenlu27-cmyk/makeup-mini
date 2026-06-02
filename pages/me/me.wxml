@@ -1,0 +1,4 @@
+<view class="card">
+  <text style="font-weight:700">我的</text>
+  <text class="meta">个人偏好、历史记录、账户等</text>
+</view>

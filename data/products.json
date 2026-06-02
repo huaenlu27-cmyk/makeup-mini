@@ -1,0 +1,17 @@
+[ 
+  { "id": "sku_p1_01", "category": "妆前", "brand": "打底王", "model": "primer-30ml", "name": "妆前打底精华", "colorName": "无色", "hex": "#FFFFFF", "price": 80, "budget": "low", "ingredients":["硅油","甘油"] },
+  { "id": "sku_p2_01", "category": "粉底液", "brand": "示例牌", "model": "foundation-light-30ml", "name": "轻薄粉底 - 象牙", "colorName": "象牙", "hex": "#F6E7D7", "price": 220, "budget": "mid", "ingredients":["水","二甲基硅油"] },
+  { "id": "sku_p2_02", "category": "粉底液", "brand": "示例牌", "model": "foundation-natural-30ml", "name": "轻薄粉底 - 自然", "colorName": "自然", "hex": "#EAC9B6", "price": 220, "budget": "mid", "ingredients":["水","二甲基硅油"] },
+  { "id": "sku_p2_03", "category": "粉底液", "brand": "平价牌", "model": "f-luxe-50ml", "name": "遮瑕粉底 - 自然", "colorName": "自然", "hex": "#EAC9B6", "price": 95, "budget": "low", "ingredients":["二氧化钛","甘油"] },
+  { "id": "sku_p3_01", "category": "散粉", "brand": "丝滑牌", "model": "loose-10g", "name": "定妆散粉", "colorName": "透明", "hex": "#F7F6F4", "price": 120, "budget": "mid", "ingredients":["滑石粉"] },
+  { "id": "sku_p4_01", "category": "粉饼", "brand": "专业牌", "model": "compact-12g", "name": "粉饼 - 自然", "colorName": "自然", "hex": "#EAC9B6", "price": 180, "budget": "mid", "ingredients":["滑石粉","色料"] },
+  { "id": "sku_p5_01", "category": "眉笔", "brand": "眉匠", "model": "brow-01", "name": "自动眉笔 - 浅棕", "colorName": "浅棕", "hex": "#A67C52", "price": 60, "budget": "low", "ingredients":["色料"] },
+  { "id": "sku_p6_01", "category": "眼影盘", "brand": "彩虹牌", "model": "palette-06", "name": "眼影盘 - 大地暖色", "colorName": "暖棕", "hex": "#8B5E3C", "price": 220, "budget": "mid", "ingredients":["滑石粉","色料"] },
+  { "id": "sku_p6_02", "category": "眼影盘", "brand": "彩虹牌", "model": "palette-06-deluxe", "name": "眼影盘 - 晚宴款", "colorName": "暖金", "hex": "#D4A017", "price": 350, "budget": "high", "ingredients":["滑石粉","色料"] },
+  { "id": "sku_p7_01", "category": "眼线笔", "brand": "黑旋风", "model": "liner-01", "name": "眼线笔 - 黑色", "colorName": "黑", "hex": "#2E2E2E", "price": 70, "budget": "low", "ingredients":["色料"] },
+  { "id": "sku_p8_01", "category": "睫毛膏", "brand": "长睫牌", "model": "mascara-XL", "name": "睫毛膏 - 加长", "colorName": "黑", "hex": "#2E2E2E", "price": 150, "budget": "mid", "ingredients":["蜂蜡","纤维"] },
+  { "id": "sku_p9_01", "category": "腮红", "brand": "腮红家", "model": "blush-rose", "name": "腮红 - 玫瑰", "colorName": "玫红", "hex": "#D6336C", "price": 110, "budget": "mid", "ingredients":["色料"] },
+  { "id": "sku_p10_01", "category": "修容", "brand": "雕刻师", "model": "contour-01", "name": "修容饼 - 自然", "colorName": "棕", "hex": "#8F5A3F", "price": 140, "budget": "mid", "ingredients":["滑石粉","色料"] },
+  { "id": "sku_p11_01", "category": "口红", "brand": "唇色牌", "model": "lippy-01", "name": "口红 - 珊瑚", "colorName": "珊瑚", "hex": "#FF6F61", "price": 200, "budget": "mid", "ingredients":["合成树脂","色料"] },
+  { "id": "sku_p11_02", "category": "口红", "brand": "唇色牌", "model": "lippy-02", "name": "口红 - 豆沙", "colorName": "豆沙", "hex": "#B86B5A", "price": 90, "budget": "low", "ingredients":["合成树脂","色料"] }
+]

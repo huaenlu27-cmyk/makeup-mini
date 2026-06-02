@@ -1,0 +1,26 @@
+{
+  "pages": [
+    "pages/checklist/checklist",
+    "pages/recommend/recommend",
+    "pages/me/me",
+    "pages/product/product",
+    "pages/try/try",
+    "pages/cart/cart"
+  ],
+  "window": {
+    "navigationBarTitleText": "美妆选购小助手"
+  }
+
+  ,
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#ff6fa3",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/checklist/checklist", "text": "化妆清单" },
+      { "pagePath": "pages/recommend/recommend", "text": "智能推荐" },
+      { "pagePath": "pages/me/me", "text": "我的" }
+    ]
+  }
+}

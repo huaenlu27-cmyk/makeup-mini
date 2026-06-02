@@ -1,0 +1,53 @@
+<view class="header" style="background: {{theme.colors.primaryBg}}; color: {{theme.colors.text}}; padding:12px 0;">
+  <view style="padding-left:12px;">
+    <text style="font-weight:700;font-size:18px;color:{{theme.colors.text}}">试色与脸型推荐</text>
+  </view>
+  <view style="padding-right:12px;">
+    <navigator url="/pages/product/product">商品</navigator>
+    <navigator url="/pages/cart/cart">购物清单</navigator>
+  </view>
+</view>
+
+<view class="card">
+  <text>肤色深浅：</text>
+  <view style="display:flex;gap:8px;margin-top:8px;">
+    <button class="cat-btn" bindtap="setTone" data-tone="浅">浅</button>
+    <button class="cat-btn" bindtap="setTone" data-tone="中">中</button>
+    <button class="cat-btn" bindtap="setTone" data-tone="深">深</button>
+  </view>
+</view>
+
+<view class="card">
+  <text>肤色偏向（色调）：</text>
+  <view style="display:flex;gap:8px;margin-top:8px;">
+    <block wx:for="{{undertones}}" wx:key="key">
+      <button class="cat-btn" bindtap="setUndertone" data-key="{{item.key}}">{{item.name}}</button>
+    </block>
+  </view>
+</view>
+
+<view style="margin-top:10px;display:flex;gap:8px;">
+  <button bindtap="runRecommend" class="btn-primary">生成推荐</button>
+  <button bindtap="savePrefs">保存偏好</button>
+</view>
+
+<block wx:if="{{recs.length}}>0">
+  <view style="margin-top:12px">
+    <text>推荐结果：</text>
+    <block wx:for="{{recs}}" wx:for-item="blockItem" wx:for-index="bidx" wx:key="bidx">
+      <view class="card">
+        <text style="font-weight:700">{{blockItem.sourceName}}</text>
+        <block wx:for="{{blockItem.colors}}" wx:for-item="col" wx:for-index="cidx" wx:key="cidx">
+          <view style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+            <view style="width:36px;height:24px;border:1px solid #ccc;background:{{col.color.hex}}"></view>
+            <view style="flex:1">
+              <text>{{col.color.name}}</text>
+              <text style="display:block;color:#666">{{col.skus.length}} 个可选 SKU</text>
+            </view>
+            <button bindtap="addSku" data-idx="{{cidx}}" data-bidx="{{bidx}}">加入示例 SKU</button>
+          </view>
+        </block>
+      </view>
+    </block>
+  </view>
+  </block>

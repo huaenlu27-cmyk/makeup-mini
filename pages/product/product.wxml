@@ -1,0 +1,49 @@
+<view class="header" style="background: {{theme.colors.primaryBg}}; color: {{theme.colors.text}}; padding:12px 0;">
+  <view style="padding-left:12px;">
+    <text style="font-weight:700;font-size:18px;color:{{theme.colors.text}}">美妆选购小助手 — 商品</text>
+  </view>
+  <view style="padding-right:12px;">
+    <navigator url="/pages/try/try">试色与脸型</navigator>
+    <navigator url="/pages/cart/cart">购物清单</navigator>
+  </view>
+</view>
+
+<view class="card">
+  <text>分类：</text>
+  <view style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+    <block wx:for="{{categories}}" wx:key="*this">
+      <button bindtap="onSetCategory" data-cat="{{item}}" class="cat-btn">{{item}}</button>
+    </block>
+  </view>
+</view>
+
+<view class="card">
+  <text>色卡（点击查看该颜色下的商品）</text>
+  <block wx:for="{{colorGroups}}" wx:key="hex">
+    <view style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+      <view class="thumb" style="background:{{item.hex}}"></view>
+      <view style="flex:1">
+        <text class="name">{{item.colorName}}</text>
+        <text class="meta">{{item.items.length}} 个匹配</text>
+      </view>
+      <button bindtap="onSelectColor" data-hex="{{item.hex}}" data-name="{{item.colorName}}" class="btn-primary">查看</button>
+    </view>
+  </block>
+</view>
+
+<block wx:if="{{selectedColor}}">
+  <view class="card">
+    <text>颜色：{{selectedColor.colorName}}</text>
+    <block wx:for="{{selectedColor.items}}" wx:key="id">
+      <view style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
+        <view>
+          <text class="name">{{item.brand}} — {{item.model}}</text>
+          <text class="meta">{{item.name}} · ¥{{item.price}}</text>
+        </view>
+        <view style="display:flex;gap:8px">
+          <button bindtap="onAddToCart" data-id="{{item.id}}" class="btn-primary">加入清单</button>
+        </view>
+      </view>
+    </block>
+  </view>
+</block>

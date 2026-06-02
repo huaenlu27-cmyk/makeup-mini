@@ -1,0 +1,59 @@
+<view class="page-wrap">
+  <view style="display:flex;gap:12px;">
+    <scroll-view style="width:28%;height:600px;" scroll-y="true">
+      <block wx:for="{{categories.groups}}" wx:for-item="group" wx:for-index="gi" wx:key="gi">
+        <view class="group-title">{{group.title}}</view>
+        <block wx:for="{{group.items}}" wx:for-item="cat" wx:for-index="ci" wx:key="cat">
+          <block wx:if="{{selectedCat==cat}}">
+            <view bindtap="onSelectCategory" data-cat="{{cat}}" class="nav-item nav-item-active">{{cat}}</view>
+          </block>
+          <block wx:else>
+            <view bindtap="onSelectCategory" data-cat="{{cat}}" class="nav-item">{{cat}}</view>
+          </block>
+        </block>
+      </block>
+    </scroll-view>
+
+    <view style="flex:1">
+      <view class="card" style="display:flex;justify-content:space-between;align-items:center;">
+        <view>
+          <text style="font-weight:700">{{selectedCat || '选择品类'}}</text>
+        </view>
+        <view>
+          <button bindtap="setViewMode" data-mode="swatch" class="cat-btn">色卡</button>
+          <button bindtap="setViewMode" data-mode="brand" class="cat-btn">品牌</button>
+        </view>
+      </view>
+
+      <block wx:if="{{viewMode}}">
+        <block wx:if="{{viewMode==='swatch'}}">
+          <view class="grid">
+            <block wx:for="{{swatches}}" wx:for-item="s" wx:for-index="i" wx:key="i">
+              <view class="card" style="display:flex;align-items:center;gap:10px;">
+                <view class="swatch" style="background:{{s.hex}}"></view>
+                <view>
+                  <text class="name">{{s.name}}</text>
+                  <text class="meta">示例 SKU：{{s.count}}</text>
+                </view>
+              </view>
+            </block>
+          </view>
+        </block>
+
+        <block wx:if="{{viewMode==='brand'}}">
+          <view>
+            <block wx:for="{{brands}}" wx:for-item="b" wx:for-index="bi" wx:key="b">
+              <view class="card" style="display:flex;justify-content:space-between;align-items:center;">
+                <view>
+                  <text class="name">{{b}}</text>
+                  <text class="meta">{{brandCounts[b] || 0}} 个商品</text>
+                </view>
+                <button bindtap="onViewBrand" data-brand="{{b}}" class="btn-primary">查看</button>
+              </view>
+            </block>
+          </view>
+        </block>
+      </block>
+    </view>
+  </view>
+</view>

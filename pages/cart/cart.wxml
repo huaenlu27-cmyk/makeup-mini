@@ -1,0 +1,25 @@
+<view class="header" style="background: {{theme.colors.primaryBg}}; color: {{theme.colors.text}}; padding:12px 0;">
+  <view style="padding-left:12px;">
+    <text style="font-weight:700;font-size:18px;color:{{theme.colors.text}}">购物清单</text>
+  </view>
+  <view style="padding-right:12px;">
+    <navigator url="/pages/product/product">商品</navigator>
+    <navigator url="/pages/try/try">试色</navigator>
+  </view>
+</view>
+
+<view class="card">
+  <button class="cat-btn" bindtap="clearCart">清空清单</button>
+</view>
+
+<block wx:if="{{items.length}}>0">
+  <block wx:for="{{items}}" wx:key="{{item.id}}">
+    <view class="card">
+      <text style="font-weight:700">{{item.brand}} · {{item.model}}</text>
+      <text style="display:block;color:#666">{{item.name}} · ¥{{item.price}}</text>
+    </view>
+  </block>
+</block>
+<block wx:else>
+  <view class="card"><text>当前清单为空</text></view>
+</block>
