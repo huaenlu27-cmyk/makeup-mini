@@ -1,6 +1,9 @@
 var taxonomy = null
 try{ taxonomy = require('../../data/taxonomy') }catch(e){ taxonomy = {} }
 
+var _fallbackProds = null
+try{ _fallbackProds = require('../../data/products') }catch(e){} 
+
 var BUDGET_OPTIONS = ['全部价位', '平价 (< ¥100)', '中等 (¥100 - ¥299)', '高端 (¥300 +)']
 
 var UNDERTONE_MAP = { warm: '暖调', neutral: '中性', cool: '冷调' }
@@ -56,7 +59,7 @@ Page({
     var pref = wx.getStorageSync('preferences') || {}
     var ids = wx.getStorageSync('recentViews') || []
     var app = getApp()
-    var prods = (app && app.globalData && app.globalData.products) || []
+    var prods = (app && app.globalData && app.globalData.products) || _fallbackProds || []
     var items = []
     for(var i = 0; i < ids.length && items.length < 10; i++){
       for(var j = 0; j < prods.length; j++){

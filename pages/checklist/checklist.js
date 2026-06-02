@@ -1,6 +1,11 @@
 var BUDGET_OPTIONS = ['全部价位', '平价 (< ¥100)', '中等 (¥100 - ¥299)', '高端 (¥300 +)']
 var BUDGET_VALUES = ['all', 'low', 'mid', 'high']
 
+var _fallbackCats = null
+var _fallbackProds = null
+try{ _fallbackCats = require('../../data/categories') }catch(e){}
+try{ _fallbackProds = require('../../data/products') }catch(e){}
+
 Page({
   data: {
     categories: { groups: [] },
@@ -20,7 +25,7 @@ Page({
   },
   onLoad(){
     var app = getApp()
-    var cats = (app && app.globalData && app.globalData.categories) || { groups: [] }
+    var cats = (app && app.globalData && app.globalData.categories) || _fallbackCats || { groups: [] }
     this.setData({ categories: cats })
     var firstGroup = cats.groups && cats.groups[0]
     var firstCat = firstGroup && firstGroup.items && firstGroup.items[0]
@@ -28,7 +33,7 @@ Page({
   },
   _getProducts(){
     var app = getApp()
-    return (app && app.globalData && app.globalData.products) || []
+    return (app && app.globalData && app.globalData.products) || _fallbackProds || []
   },
   onToggleGroup(e){
     var gi = e.currentTarget.dataset.gi

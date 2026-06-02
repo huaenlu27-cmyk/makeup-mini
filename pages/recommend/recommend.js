@@ -1,6 +1,9 @@
 var taxonomy = null
 try{ taxonomy = require('../../data/taxonomy') }catch(e){ taxonomy = {} }
 
+var _fallbackProds = null
+try{ _fallbackProds = require('../../data/products') }catch(e){}
+
 var FOUNDATION_MAP = {
   '浅_暖': ['p04','p09'], '浅_中性': ['p05','p06','p08'], '浅_冷': ['p08','p06'],
   '中_暖': ['p05','p07','p09'], '中_中性': ['p05','p06','p07'], '中_冷': ['p06','p08'],
@@ -146,7 +149,7 @@ Page({
   onSelOccasion(e){ this.setData({ selOccasion: e.currentTarget.dataset.key }) },
   onGenerate(){
     var app = getApp()
-    var prods = (app && app.globalData && app.globalData.products) || []
+    var prods = (app && app.globalData && app.globalData.products) || _fallbackProds || []
     if(prods.length === 0){
       wx.showToast({ title: '数据加载中请稍后', icon: 'none' })
       return
