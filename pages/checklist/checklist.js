@@ -102,10 +102,34 @@ Page({
   },
   onTapSwatch(e){
     var key = e.currentTarget.dataset.key
-    this.setData({ expandedKey: this.data.expandedKey === key ? '' : key })
+    var expanded = this.data.expandedKey === key ? '' : key
+    this.setData({ expandedKey: expanded })
+    if(expanded){
+      var swatches = this.data.swatches
+      for(var i = 0; i < swatches.length; i++){
+        if(swatches[i].hex === expanded){
+          var items = swatches[i].items || []
+          for(var j = 0; j < items.length; j++){
+            this._addRecentView(items[j].id)
+          }
+          break
+        }
+      }
+    }
+  },
+  _addRecentView(id){
+    var views = wx.getStorageSync('recentViews') || []
+    var filtered = []
+    for(var i = 0; i < views.length; i++){
+      if(views[i] !== id) filtered.push(views[i])
+    }
+    filtered.unshift(id)
+    if(filtered.length > 20) filtered = filtered.slice(0, 20)
+    wx.setStorageSync('recentViews', filtered)
   },
   onAddToCart(e){
     var id = e.currentTarget.dataset.id
+    this._addRecentView(id)
     var swatches = this.data.swatches
     var sku = null
     for(var i = 0; i < swatches.length; i++){

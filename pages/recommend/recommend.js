@@ -91,6 +91,19 @@ Page({
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
     if(theme) this.setData({ theme: theme })
+    var saved = wx.getStorageSync('skinProfile')
+    if(saved){
+      var d = {}
+      if(saved.faceShape) d.selFace = saved.faceShape
+      if(saved.depth) d.selDepth = saved.depth
+      if(saved.undertone) d.selUndertone = saved.undertone
+      if(saved.occasion) d.selOccasion = saved.occasion
+      this.setData(d)
+    }
+    var shapes = taxonomy.face_shapes || []
+    for(var i = 0; i < shapes.length; i++){
+      if(shapes[i].key === this.data.selFace){ this.setData({ currentFaceDetail: shapes[i] }); break }
+    }
   },
   onShowTip(e){
     var key = e.currentTarget.dataset.key
@@ -213,6 +226,15 @@ Page({
   },
   onAddToCart(e){
     var id = e.currentTarget.dataset.id
+    var views = wx.getStorageSync('recentViews') || []
+    var filtered = []
+    for(var i = 0; i < views.length; i++){
+      if(views[i] !== id) filtered.push(views[i])
+    }
+    filtered.unshift(id)
+    if(filtered.length > 20) filtered = filtered.slice(0, 20)
+    wx.setStorageSync('recentViews', filtered)
+
     var groups = this.data.results.groups
     var sku = null
     for(var g = 0; g < groups.length; g++){
