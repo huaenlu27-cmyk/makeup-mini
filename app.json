@@ -3,24 +3,24 @@
     "pages/checklist/checklist",
     "pages/recommend/recommend",
     "pages/me/me",
-    "pages/product/product",
-    "pages/try/try",
     "pages/cart/cart"
   ],
   "window": {
-    "navigationBarTitleText": "美妆选购小助手"
-  }
-
-  ,
+    "navigationBarTitleText": "美妆选购小助手",
+    "navigationBarBackgroundColor": "#F8F4F6",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F8F4F6"
+  },
   "tabBar": {
-    "color": "#666666",
-    "selectedColor": "#ff6fa3",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "color": "#A89098",
+    "selectedColor": "#E595A8",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
     "list": [
-      { "pagePath": "pages/checklist/checklist", "text": "化妆清单" },
-      { "pagePath": "pages/recommend/recommend", "text": "智能推荐" },
-      { "pagePath": "pages/me/me", "text": "我的" }
+      { "pagePath": "pages/checklist/checklist", "text": "化妆清单", "iconPath": "images/checklist.png", "selectedIconPath": "images/checklist_active.png" },
+      { "pagePath": "pages/recommend/recommend", "text": "智能推荐", "iconPath": "images/recommend.png", "selectedIconPath": "images/recommend_active.png" },
+      { "pagePath": "pages/cart/cart", "text": "我的清单", "iconPath": "images/cart.png", "selectedIconPath": "images/cart_active.png" },
+      { "pagePath": "pages/me/me", "text": "我的", "iconPath": "images/me.png", "selectedIconPath": "images/me_active.png" }
     ]
   }
 }

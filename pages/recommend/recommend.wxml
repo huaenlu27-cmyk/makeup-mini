@@ -1,4 +1,192 @@
-<view class="card">
-  <text style="font-weight:700">智能推荐（占位）</text>
-  <text class="meta">后续可接入基于肤色/脸型的推荐算法与示例色卡</text>
+<view class="page-wrap">
+  <view class="page-title">智能推荐</view>
+  <text class="page-subtitle">选择你的特征，获取专属妆容方案</text>
+
+  <block wx:if="{{!hasResult}}">
+    <view class="mode-tabs">
+      <view bindtap="onTabMode" data-mode="skin"
+        class="mode-tab {{tabMode==='skin' ? 'mode-tab-active' : ''}}">根据肤色/条件</view>
+      <view bindtap="onTabMode" data-mode="style"
+        class="mode-tab {{tabMode==='style' ? 'mode-tab-active' : ''}}">根据妆容类型</view>
+    </view>
+
+    <block wx:if="{{tabMode==='skin'}}">
+      <view class="section">
+        <text class="section-title">脸型</text>
+        <scroll-view scroll-x="true" class="card-scroll">
+          <view class="card-row">
+            <block wx:for="{{faceShapes}}" wx:key="key">
+              <view bindtap="onSelFace" data-key="{{item.key}}"
+                class="sel-card {{selFace===item.key ? 'sel-card-active' : ''}}">
+                <text class="sel-card-icon">{{item.key==='oval'?'🥚':item.key==='round'?'⭕':item.key==='square'?'⬜':item.key==='heart'?'💜':item.key==='diamond'?'💎':item.key==='long'?'▯':item.key==='triangle'?'🔽':'🔵'}}</text>
+                <text class="sel-card-label">{{item.name}}</text>
+              </view>
+            </block>
+          </view>
+        </scroll-view>
+        <view wx:if="{{currentFaceDetail}}" class="face-detail-card">
+          <view class="face-detail-header">
+            <text class="face-detail-icon">{{selFace==='oval'?'🥚':selFace==='round'?'⭕':selFace==='square'?'⬜':selFace==='heart'?'💜':selFace==='diamond'?'💎':selFace==='long'?'▯':selFace==='triangle'?'🔽':'🔵'}}</text>
+            <text class="face-detail-name">{{currentFaceDetail.name}}</text>
+          </view>
+          <text class="face-detail-desc">{{currentFaceDetail.description}}</text>
+          <view wx:if="{{currentFaceDetail.celebrities}}" class="face-detail-row">
+            <text class="face-detail-label">代表人物：</text>
+            <text class="face-detail-value">{{currentFaceDetail.celebrities}}</text>
+          </view>
+          <view wx:if="{{currentFaceDetail.tips}}" class="face-detail-row">
+            <text class="face-detail-label">化妆技巧：</text>
+            <text class="face-detail-value">{{currentFaceDetail.tips}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section">
+        <view class="section-title-wrap">
+          <text class="section-title">肤色深浅</text>
+          <view class="tip-wrapper">
+            <text id="depth-icon" bindtap="onShowTip" data-key="depth" class="tip-icon">❓</text>
+          </view>
+        </view>
+        <view class="option-row">
+          <block wx:for="{{depthList}}" wx:key="key">
+            <view bindtap="onSelDepth" data-key="{{item.key}}"
+              class="chip {{selDepth===item.key ? 'chip-active' : ''}}">
+              <view class="chip-color" style="background:{{item.key==='very_fair'||item.key==='fair'||item.key==='light'?'#F5E6D3':item.key==='medium'?'#D4A890':item.key==='tan'?'#A0785A':'#7A5A3E'}}"></view>
+              <text>{{item.name}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <view class="section">
+        <view class="section-title-wrap">
+          <text class="section-title">肤色基调</text>
+          <view class="tip-wrapper">
+            <text id="undertone-icon" bindtap="onShowTip" data-key="undertone" class="tip-icon">❓</text>
+          </view>
+        </view>
+        <view class="option-row">
+          <view bindtap="onSelUndertone" data-key="warm"
+            class="chip {{selUndertone==='warm' ? 'chip-active' : ''}}">
+            <view class="chip-color" style="background:#F5C8A0"></view>
+            <text>暖调</text>
+          </view>
+          <view bindtap="onSelUndertone" data-key="neutral"
+            class="chip {{selUndertone==='neutral' ? 'chip-active' : ''}}">
+            <view class="chip-color" style="background:#E8D5C0"></view>
+            <text>中性</text>
+          </view>
+          <view bindtap="onSelUndertone" data-key="cool"
+            class="chip {{selUndertone==='cool' ? 'chip-active' : ''}}">
+            <view class="chip-color" style="background:#E8C8D0"></view>
+            <text>冷调</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">场景</text>
+        <view class="option-row">
+          <block wx:for="{{occasionList}}" wx:key="key">
+            <view bindtap="onSelOccasion" data-key="{{item.key}}"
+              class="chip {{selOccasion===item.key ? 'chip-active' : ''}}">
+              <text>{{item.icon}} {{item.name}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{tabMode==='style'}}">
+      <view class="section">
+        <view class="section-title-wrap">
+          <text class="section-title">妆容风格</text>
+        </view>
+        <view class="option-row">
+          <block wx:for="{{styleList}}" wx:key="key">
+            <view bindtap="onSelStyle" data-key="{{item.key}}"
+              class="chip {{selStyle===item.key ? 'chip-active' : ''}}">
+              <text>{{item.icon}} {{item.name}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+
+    <view class="gen-btn-wrap">
+      <button bindtap="onGenerate" class="btn-primary btn-gen">✨ 生成推荐方案</button>
+    </view>
+  </block>
+
+  <block wx:if="{{hasResult && results}}">
+    <view class="result-header">
+      <view class="result-header-left">
+        <text class="result-title">你的专属方案</text>
+        <text class="result-subtitle">共 {{results.groups.length}} 类推荐</text>
+      </view>
+      <button bindtap="onReset" class="btn-outline btn-regenerate">重新生成</button>
+    </view>
+
+    <block wx:if="{{results.styleInfo}}">
+      <view class="rec-group tip-card">
+        <view class="rec-group-header">
+          <text>🎨</text>
+          <text class="rec-group-title">{{results.styleInfo.label}} 推荐</text>
+        </view>
+        <text class="tip-text">{{results.styleInfo.desc}}</text>
+      </view>
+    </block>
+
+    <block wx:for="{{results.groups}}" wx:for-item="group" wx:for-index="gi" wx:key="title">
+      <view class="rec-group">
+        <view class="rec-group-header">
+          <text>{{group.icon}}</text>
+          <text class="rec-group-title">{{group.title}}</text>
+          <text class="rec-group-count">{{group.items.length}} 件</text>
+        </view>
+        <block wx:for="{{group.items}}" wx:for-item="item" wx:key="id">
+          <view class="rec-item">
+            <view class="rec-item-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+            <view class="rec-item-info">
+              <text class="rec-item-brand">{{item.brand}}</text>
+              <text class="rec-item-name">{{item.name}}</text>
+              <view class="rec-item-tags">
+                <text class="tag">{{item.colorName}}</text>
+                <text class="rec-item-price">¥{{item.price}}</text>
+              </view>
+            </view>
+            <button bindtap="onAddToCart" data-id="{{item.id}}" class="add-cart-btn">+</button>
+          </view>
+        </block>
+      </view>
+    </block>
+
+    <block wx:if="{{results.faceShapeTip}}">
+      <view class="rec-group tip-card">
+        <view class="rec-group-header">
+          <text>💡</text>
+          <text class="rec-group-title">脸型妆容建议</text>
+        </view>
+        <text class="tip-text">{{results.faceShapeTip}}</text>
+      </view>
+    </block>
+
+    <view class="gen-btn-wrap">
+      <button bindtap="onReset" class="btn-primary btn-gen">🔄 重新匹配</button>
+    </view>
+  </block>
+
+  <view wx:if="{{showDepthTip}}" class="tip-backdrop" bindtap="onHideTip">
+    <view catchtap="" class="tip-float" style="top:{{tipTop}}px; left:{{tipLeft}}px">
+      <view class="tip-float-arrow"></view>
+      <text class="tip-float-text">肤色深浅指皮肤的明暗程度，从白皙到深色。观察脸颊自然肤色即可判断：肤色越浅，粉底色号越亮。</text>
+    </view>
+  </view>
+  <view wx:if="{{showUndertoneTip}}" class="tip-backdrop" bindtap="onHideTip">
+    <view catchtap="" class="tip-float" style="top:{{tipTop}}px; left:{{tipLeft}}px">
+      <view class="tip-float-arrow"></view>
+      <text class="tip-float-text">肤色基调指皮肤底层的色相倾向，分暖黄调、冷粉调和中性皮。看手腕血管：偏绿色为暖皮，偏蓝紫色为冷皮，蓝绿兼有为中性皮。</text>
+    </view>
+  </view>
 </view>

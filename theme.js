@@ -1,13 +1,14 @@
-// 主题配置（参考 theme-factory 与 brand-guidelines）
 module.exports = {
-  name: 'Minimal Pink',
+  name: 'Dusty Rose',
   colors: {
-    primaryBg: '#fff7fb',
-    surface: '#ffffff',
-    text: '#2b2b2b',
-    muted: '#9b8b9b',
-    accent: '#ff6fa3',
-    accent2: '#ffd6e8'
+    primaryBg: '#F8F4F6',
+    surface: '#FFFFFF',
+    text: '#3A2A30',
+    muted: '#A89098',
+    accent: '#E595A8',
+    accentLight: '#F5D6DF',
+    border: '#EDE4E7',
+    chipBg: '#F8F4F6'
   },
   fonts: {
     heading: 'PingFang SC, "Helvetica Neue", Arial',

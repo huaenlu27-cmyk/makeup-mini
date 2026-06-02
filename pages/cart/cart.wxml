@@ -1,25 +1,35 @@
-<view class="header" style="background: {{theme.colors.primaryBg}}; color: {{theme.colors.text}}; padding:12px 0;">
-  <view style="padding-left:12px;">
-    <text style="font-weight:700;font-size:18px;color:{{theme.colors.text}}">购物清单</text>
-  </view>
-  <view style="padding-right:12px;">
-    <navigator url="/pages/product/product">商品</navigator>
-    <navigator url="/pages/try/try">试色</navigator>
-  </view>
-</view>
+<view class="page-wrap">
+  <view class="page-title">我的清单</view>
+  <text class="page-subtitle">已收集 {{items.length}} 件商品</text>
 
-<view class="card">
-  <button class="cat-btn" bindtap="clearCart">清空清单</button>
-</view>
-
-<block wx:if="{{items.length}}>0">
-  <block wx:for="{{items}}" wx:key="{{item.id}}">
-    <view class="card">
-      <text style="font-weight:700">{{item.brand}} · {{item.model}}</text>
-      <text style="display:block;color:#666">{{item.name}} · ¥{{item.price}}</text>
+  <block wx:if="{{items.length===0}}">
+    <view class="empty-state">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">清单还是空的</text>
+      <text class="empty-hint">在「化妆清单」中添加感兴趣的商品</text>
+      <button bindtap="goChecklist" class="btn-primary" style="margin-top:16px;padding:10px 24px;font-size:13px">去化妆清单选购</button>
     </view>
   </block>
-</block>
-<block wx:else>
-  <view class="card"><text>当前清单为空</text></view>
-</block>
+
+  <block wx:if="{{items.length>0}}">
+    <scroll-view scroll-y="true" style="flex:1;min-height:0">
+      <block wx:for="{{items}}" wx:for-item="item" wx:key="id">
+        <view class="cart-item card">
+          <view class="cart-item-left">
+            <view class="swatch cart-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+          </view>
+          <view class="cart-item-info">
+            <text class="name">{{item.name}}</text>
+            <text class="meta">{{item.brand}} · {{item.colorName}}</text>
+            <text class="cart-price">¥{{item.price}}</text>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+  </block>
+</view>
+
+<view wx:if="{{items.length>0}}" class="cart-bottom">
+  <button bindtap="clearCart" class="btn-outline btn-clear">清空清单</button>
+  <button bindtap="goChecklist" class="btn-primary btn-continue">去化妆清单选购</button>
+</view>
