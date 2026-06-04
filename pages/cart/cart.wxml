@@ -12,7 +12,7 @@
   </block>
 
   <block wx:if="{{items.length>0}}">
-    <scroll-view scroll-y="true" style="flex:1;min-height:0">
+    <scroll-view scroll-y="true" style="flex:1;min-height:0;padding-bottom:60px;box-sizing:content-box">
       <block wx:for="{{groups}}" wx:for-item="group" wx:key="title">
         <view class="cart-group">
           <view class="cart-group-header">
@@ -21,14 +21,17 @@
           </view>
           <block wx:for="{{group.items}}" wx:for-item="item" wx:key="id">
             <view class="cart-item">
-              <view class="cart-item-left">
-                <view class="swatch cart-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+              <view bindtap="onTapItem" data-id="{{item.id}}" hover-class="item-hover" class="cart-item-main">
+                <view class="cart-item-left">
+                  <view class="swatch cart-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+                </view>
+                <view class="cart-item-info">
+                  <text class="name">{{item.name}}</text>
+                  <text class="meta">{{item.brand}} · {{item.colorName}}</text>
+                  <text class="cart-price">¥{{item.price}}</text>
+                </view>
               </view>
-              <view class="cart-item-info">
-                <text class="name">{{item.name}}</text>
-                <text class="meta">{{item.brand}} · {{item.colorName}}</text>
-                <text class="cart-price">¥{{item.price}}</text>
-              </view>
+              <button bindtap="onRemoveItem" data-id="{{item.id}}" class="btn-remove-item">✕</button>
             </view>
           </block>
         </view>
@@ -38,6 +41,10 @@
 </view>
 
 <view wx:if="{{items.length>0}}" class="cart-bottom">
+  <view class="cart-total">
+    <text class="total-label">合计</text>
+    <text class="total-price">¥{{totalPrice}}</text>
+  </view>
   <button bindtap="clearCart" class="btn-outline btn-clear">清空清单</button>
-  <button bindtap="goChecklist" class="btn-primary btn-continue">去化妆清单选购</button>
+  <button bindtap="goChecklist" class="btn-primary btn-continue">继续选购</button>
 </view>

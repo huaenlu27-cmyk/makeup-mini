@@ -1,34 +1,137 @@
 module.exports = [
+
+  // ─── 隔离/妆前乳 ───
   { id:'p01', category:'隔离/妆前乳', brand:'Laura Mercier', name:'经典隔离妆前乳', colorName:'无色', hex:'#F5E6D3', price:280, budget:'mid' },
   { id:'p02', category:'隔离/妆前乳', brand:'CPB', name:'长管隔离', colorName:'肤色', hex:'#E8D5C0', price:540, budget:'high' },
+  { id:'p51', category:'隔离/妆前乳', brand:'花西子', name:'控油妆前乳', colorName:'无色', hex:'#F2EDE8', price:89, budget:'low' },
+  { id:'p52', category:'隔离/妆前乳', brand:'兰芝', name:'雪纱隔离乳 绿色', colorName:'绿色', hex:'#C8E0C0', price:195, budget:'mid' },
+  { id:'p53', category:'隔离/妆前乳', brand:'兰芝', name:'雪纱隔离乳 紫色', colorName:'紫色', hex:'#D0C0E8', price:195, budget:'mid' },
+  { id:'p54', category:'隔离/妆前乳', brand:'完美日记', name:'柔焦妆前乳', colorName:'无色', hex:'#F0E8E0', price:59, budget:'low' },
+  { id:'p55', category:'隔离/妆前乳', brand:'Smashbox', name:'光感妆前乳', colorName:'透明', hex:'#F5F0E8', price:220, budget:'mid' },
+  { id:'p56', category:'隔离/妆前乳', brand:'Benefit', name:'毛孔精英妆前', colorName:'肤色', hex:'#E8DCC8', price:235, budget:'mid' },
+
+  // ─── 粉底液/气垫 ───
   { id:'p04', category:'粉底液/气垫', brand:'Bobbi Brown', name:'虫草粉底液 #0', colorName:'瓷白', hex:'#F7EFEF', price:420, budget:'high' },
   { id:'p05', category:'粉底液/气垫', brand:'MAC', name:'定制无瑕粉底液 NC15', colorName:'象牙', hex:'#F6E7D7', price:300, budget:'mid' },
   { id:'p06', category:'粉底液/气垫', brand:'Shu Uemura', name:'小方瓶粉底液 584', colorName:'自然', hex:'#EAC9B6', price:350, budget:'high' },
   { id:'p07', category:'粉底液/气垫', brand:'NARS', name:'超持久粉底液 #6', colorName:'暖蜜', hex:'#C98B6A', price:350, budget:'high' },
   { id:'p08', category:'粉底液/气垫', brand:'Estee Lauder', name:'DW持妆粉底液 1N1', colorName:'裸色', hex:'#E0BFA6', price:320, budget:'high' },
   { id:'p09', category:'粉底液/气垫', brand:'雪花秀', name:'气垫粉底液 21号', colorName:'自然', hex:'#EAC9B6', price:260, budget:'mid' },
+  { id:'p57', category:'粉底液/气垫', brand:'兰蔻', name:'持妆粉底液 PO-01', colorName:'瓷白', hex:'#F5E8E0', price:380, budget:'high' },
+  { id:'p58', category:'粉底液/气垫', brand:'Estee Lauder', name:'沁水粉底液 1C0', colorName:'冷瓷', hex:'#F0E0D8', price:390, budget:'high' },
+  { id:'p59', category:'粉底液/气垫', brand:'阿玛尼', name:'权利粉底液 2号', colorName:'象牙白', hex:'#F2DCC8', price:450, budget:'high' },
+  { id:'p60', category:'粉底液/气垫', brand:'花西子', name:'气垫C30', colorName:'自然色', hex:'#E8C8B0', price:129, budget:'mid' },
+  { id:'p61', category:'粉底液/气垫', brand:'爱敬', name:'粉底霜气垫 21号', colorName:'亮白', hex:'#F0E0D0', price:148, budget:'mid' },
+  { id:'p62', category:'粉底液/气垫', brand:'完美日记', name:'轻薄粉底液', colorName:'自然', hex:'#E8D0C0', price:59, budget:'low' },
+  { id:'p63', category:'粉底液/气垫', brand:'Dior', name:'锁妆粉底液 0N', colorName:'中性瓷白', hex:'#F5E8E0', price:430, budget:'high' },
+  { id:'p64', category:'粉底液/气垫', brand:'Chanel', name:'柔光粉底液 BD01', colorName:'瓷白', hex:'#F0E4D8', price:420, budget:'high' },
+  { id:'p65', category:'粉底液/气垫', brand:'Shu Uemura', name:'小方瓶粉底液 574', colorName:'中性', hex:'#E8C8B0', price:350, budget:'high' },
+  { id:'p139', category:'粉底液/气垫', brand:'完美意境', name:'粉霜', colorName:'自然色', hex:'#E8D0C0', price:75, budget:'low' },
+  { id:'p140', category:'粉底液/气垫', brand:'Estee Lauder', name:'DW持妆粉底液 2N1', colorName:'中性自然', hex:'#D8B8A0', price:320, budget:'high' },
+
+  // ─── 遮瑕 ───
   { id:'p10', category:'遮瑕', brand:'NARS', name:'遮瑕蜜 Custard', colorName:'自然', hex:'#DDB79A', price:180, budget:'mid' },
   { id:'p11', category:'遮瑕', brand:'MAC', name:'六色遮瑕盘', colorName:'多色', hex:'#E8C8A0', price:320, budget:'high' },
+  { id:'p66', category:'遮瑕', brand:'花西子', name:'遮瑕液', colorName:'自然色', hex:'#E0C8B8', price:79, budget:'low' },
+  { id:'p67', category:'遮瑕', brand:'得鲜', name:'遮瑕液 1.5号', colorName:'自然', hex:'#E0D0C0', price:28, budget:'low' },
+  { id:'p68', category:'遮瑕', brand:'完美日记', name:'遮瑕液', colorName:'象牙白', hex:'#F0E0D0', price:39, budget:'low' },
+  { id:'p69', category:'遮瑕', brand:'IPSA', name:'三色遮瑕盘', colorName:'多色', hex:'#E8D0B8', price:250, budget:'mid' },
+
+  // ─── 粉饼/散粉 ───
   { id:'p12', category:'粉饼/散粉', brand:'Laura Mercier', name:'柔光散粉', colorName:'透明', hex:'#F7F6F4', price:240, budget:'mid' },
   { id:'p13', category:'粉饼/散粉', brand:'Make Up For Ever', name:'HD高清散粉', colorName:'透明', hex:'#F0EDE8', price:260, budget:'mid' },
   { id:'p14', category:'粉饼/散粉', brand:'NARS', name:'蜜粉饼', colorName:'透明', hex:'#F7F0EB', price:280, budget:'mid' },
+  { id:'p70', category:'粉饼/散粉', brand:'花西子', name:'空气蜜粉', colorName:'透明', hex:'#F5F0E8', price:109, budget:'mid' },
+  { id:'p71', category:'粉饼/散粉', brand:'完美日记', name:'散粉', colorName:'透明', hex:'#F8F4F0', price:49, budget:'low' },
+  { id:'p72', category:'粉饼/散粉', brand:'Chanel', name:'轻盈蜜粉', colorName:'透明', hex:'#F5F0EC', price:430, budget:'high' },
+  { id:'p73', category:'粉饼/散粉', brand:'黛珂', name:'散粉 00号', colorName:'透明', hex:'#F0ECE8', price:260, budget:'mid' },
+  { id:'p74', category:'粉饼/散粉', brand:'Bobbi Brown', name:'羽柔蜜粉', colorName:'透明', hex:'#F5F0E8', price:320, budget:'high' },
+
+  // ─── 定妆喷雾 ───
+  { id:'p75', category:'定妆喷雾', brand:'MAC', name:'定妆喷雾', colorName:'无色', hex:'#E8F0E8', price:150, budget:'mid' },
+  { id:'p76', category:'定妆喷雾', brand:'Urban Decay', name:'All Nighter定妆喷雾', colorName:'无色', hex:'#E8E8F0', price:180, budget:'mid' },
+  { id:'p77', category:'定妆喷雾', brand:'花西子', name:'定妆喷雾', colorName:'无色', hex:'#F0F0E8', price:79, budget:'low' },
+  { id:'p78', category:'定妆喷雾', brand:'NYX', name:'定妆喷雾 哑光', colorName:'无色', hex:'#F0ECE8', price:60, budget:'low' },
+  { id:'p79', category:'定妆喷雾', brand:'完美日记', name:'定妆喷雾', colorName:'无色', hex:'#F0F0EC', price:39, budget:'low' },
+  { id:'p148', category:'定妆喷雾', brand:'娇韵诗', name:'定妆喷雾', colorName:'无色', hex:'#E8F0EC', price:220, budget:'mid' },
+
+  // ─── 腮红 ───
   { id:'p15', category:'腮红', brand:'NARS', name:'Orgasm 腮红', colorName:'蜜桃粉', hex:'#E87A8A', price:240, budget:'mid' },
   { id:'p16', category:'腮红', brand:'MAC', name:'Melba 腮红', colorName:'杏色', hex:'#E8A070', price:200, budget:'mid' },
   { id:'p17', category:'腮红', brand:'倩碧', name:'小雏菊腮红 05 Nude Pop', colorName:'裸色', hex:'#D4A890', price:130, budget:'mid' },
   { id:'p18', category:'腮红', brand:'Benefit', name:'蒲公英腮红', colorName:'浅粉', hex:'#F0C0C8', price:180, budget:'mid' },
+  { id:'p80', category:'腮红', brand:'3CE', name:'Mono Pink腮红', colorName:'粉色', hex:'#F0A0B0', price:99, budget:'low' },
+  { id:'p81', category:'腮红', brand:'花西子', name:'腮红 桃红', colorName:'桃红色', hex:'#E88070', price:89, budget:'low' },
+  { id:'p82', category:'腮红', brand:'完美日记', name:'双色腮红', colorName:'蜜桃', hex:'#E89080', price:39, budget:'low' },
+  { id:'p83', category:'腮红', brand:'橘朵', name:'腮红 06号', colorName:'杏色', hex:'#E8A878', price:29, budget:'low' },
+  { id:'p84', category:'腮红', brand:'NARS', name:'Sex Appeal', colorName:'蜜桃', hex:'#F0B098', price:240, budget:'mid' },
+  { id:'p85', category:'腮红', brand:'倩碧', name:'小雏菊腮红 15号', colorName:'薰衣草', hex:'#C8A0D0', price:130, budget:'mid' },
+  { id:'p144', category:'腮红', brand:'3CE', name:'Rose Beige', colorName:'玫瑰米色', hex:'#E89880', price:99, budget:'low' },
+
+  // ─── 修容/修颜 ───
   { id:'p19', category:'修容/修颜', brand:'Fenty Beauty', name:'修容棒 Amber', colorName:'冷灰棕', hex:'#8F7A6F', price:180, budget:'mid' },
   { id:'p20', category:'修容/修颜', brand:'MAC', name:'Omega 修容', colorName:'灰棕色', hex:'#A0806A', price:160, budget:'mid' },
+  { id:'p86', category:'修容/修颜', brand:'Fenty Beauty', name:'修容棒 Mocha', colorName:'暖棕', hex:'#A08060', price:180, budget:'mid' },
+  { id:'p87', category:'修容/修颜', brand:'Too Cool For School', name:'修容盘', colorName:'灰棕', hex:'#B8A088', price:98, budget:'low' },
+  { id:'p88', category:'修容/修颜', brand:'橘朵', name:'修容粉', colorName:'灰棕', hex:'#B09880', price:29, budget:'low' },
+  { id:'p89', category:'修容/修颜', brand:'Kevyn Aucoin', name:'修容粉', colorName:'灰棕', hex:'#A08870', price:280, budget:'mid' },
+  { id:'p145', category:'修容/修颜', brand:'MAC', name:'修容粉饼', colorName:'灰棕色', hex:'#A0806A', price:200, budget:'mid' },
+
+  // ─── 高光 ───
   { id:'p21', category:'高光', brand:'MAC', name:'Double Gleam 高光', colorName:'香槟金', hex:'#E8D0A0', price:220, budget:'mid' },
+  { id:'p90', category:'高光', brand:'Bobbi Brown', name:'五花肉高光', colorName:'香槟', hex:'#E8C898', price:380, budget:'high' },
+  { id:'p91', category:'高光', brand:'花西子', name:'高光', colorName:'珍珠白', hex:'#F0E8D8', price:109, budget:'mid' },
+  { id:'p92', category:'高光', brand:'Fenty Beauty', name:'Diamond Bomb', colorName:'钻石', hex:'#F0E8E0', price:280, budget:'mid' },
+  { id:'p93', category:'高光', brand:'完美日记', name:'高光', colorName:'香槟金', hex:'#E8D8B8', price:39, budget:'low' },
+  { id:'p94', category:'高光', brand:'CPB', name:'高光 17号', colorName:'珍珠', hex:'#F0E8E0', price:520, budget:'high' },
+  { id:'p149', category:'高光', brand:'3CE', name:'高光棒', colorName:'粉色', hex:'#F0D0C8', price:99, budget:'low' },
+
+  // ─── 眼影 ───
   { id:'p22', category:'眼影', brand:'CT', name:'Pillow Talk 眼影盘', colorName:'玫瑰棕', hex:'#C8A0A0', price:380, budget:'high' },
   { id:'p23', category:'眼影', brand:'3CE', name:'Overtake 眼影盘', colorName:'橘棕', hex:'#C8A060', price:200, budget:'mid' },
   { id:'p24', category:'眼影', brand:'Urban Decay', name:'Naked Heat 眼影盘', colorName:'红棕', hex:'#A06040', price:380, budget:'high' },
+  { id:'p95', category:'眼影', brand:'完美日记', name:'动物眼影盘 小狗盘', colorName:'橘棕', hex:'#D0A060', price:69, budget:'low' },
+  { id:'p96', category:'眼影', brand:'花西子', name:'百鸟朝凤眼影盘', colorName:'橘棕', hex:'#C8A080', price:129, budget:'mid' },
+  { id:'p97', category:'眼影', brand:'橘朵', name:'单色眼影 M22', colorName:'哑光', hex:'#C09878', price:19, budget:'low' },
+  { id:'p98', category:'眼影', brand:'3CE', name:'芋泥盘', colorName:'紫棕', hex:'#A890A0', price:200, budget:'mid' },
+  { id:'p99', category:'眼影', brand:'Huda Beauty', name:'New Nude盘', colorName:'玫瑰', hex:'#D0A8A8', price:350, budget:'high' },
+  { id:'p100', category:'眼影', brand:'Too Faced', name:'蜜桃盘', colorName:'蜜桃', hex:'#D8A888', price:280, budget:'mid' },
+  { id:'p101', category:'眼影', brand:'CT', name:'Exaggereyes', colorName:'金棕', hex:'#C09868', price:380, budget:'high' },
+  { id:'p143', category:'眼影', brand:'完美日记', name:'国家地理眼影盘', colorName:'赤彤丹霞', hex:'#C06848', price:79, budget:'low' },
+
+  // ─── 眼线 ───
   { id:'p25', category:'眼线', brand:'Flowfushi', name:'熊野职人眼线笔', colorName:'棕色', hex:'#6A4A30', price:120, budget:'mid' },
   { id:'p26', category:'眼线', brand:'MAC', name:'持久眼线笔', colorName:'黑色', hex:'#2E2E2E', price:110, budget:'mid' },
+  { id:'p102', category:'眼线', brand:'花西子', name:'浮雕眼线笔', colorName:'黑色', hex:'#2E2E2E', price:79, budget:'low' },
+  { id:'p103', category:'眼线', brand:'完美日记', name:'眼线液笔', colorName:'棕色', hex:'#6A4A30', price:29, budget:'low' },
+  { id:'p104', category:'眼线', brand:'Kiss Me', name:'极细眼线笔', colorName:'黑色', hex:'#2E2E2E', price:69, budget:'low' },
+  { id:'p105', category:'眼线', brand:'Flowfushi', name:'眼线胶笔', colorName:'深棕', hex:'#5A3A2A', price:99, budget:'low' },
+
+  // ─── 睫毛膏 ───
   { id:'p27', category:'睫毛膏', brand:'Kiss Me', name:'纤长睫毛膏', colorName:'黑色', hex:'#2E2E2E', price:80, budget:'low' },
   { id:'p28', category:'睫毛膏', brand:'HR', name:'蕾丝睫毛膏', colorName:'黑色', hex:'#2E2E2E', price:280, budget:'mid' },
+  { id:'p106', category:'睫毛膏', brand:'完美日记', name:'睫毛膏', colorName:'黑色', hex:'#2E2E2E', price:39, budget:'low' },
+  { id:'p107', category:'睫毛膏', brand:'花西子', name:'睫毛膏', colorName:'黑色', hex:'#2E2E2E', price:79, budget:'low' },
+  { id:'p108', category:'睫毛膏', brand:'兰蔻', name:'天鹅颈睫毛膏', colorName:'黑色', hex:'#2E2E2E', price:280, budget:'mid' },
+  { id:'p109', category:'睫毛膏', brand:'艾杜纱', name:'睫毛打底膏', colorName:'黑色', hex:'#3A3A3A', price:89, budget:'low' },
+  { id:'p146', category:'睫毛膏', brand:'完美日记', name:'睫毛打底', colorName:'黑色', hex:'#3A3A3A', price:29, budget:'low' },
+
+  // ─── 眉笔/眉粉/染眉 ───
   { id:'p29', category:'眉笔/眉粉/染眉', brand:'植村秀', name:'砍刀眉笔 05', colorName:'深灰', hex:'#5A4A3A', price:130, budget:'mid' },
   { id:'p30', category:'眉笔/眉粉/染眉', brand:'Benefit', name:'防麻瓜眉笔 03', colorName:'浅棕', hex:'#8A7050', price:150, budget:'mid' },
   { id:'p31', category:'眉笔/眉粉/染眉', brand:'名创优品', name:'三合一眉笔', colorName:'灰棕', hex:'#7A6A50', price:25, budget:'low' },
+  { id:'p110', category:'眉笔/眉粉/染眉', brand:'花西子', name:'眉笔', colorName:'灰色', hex:'#5A4A3A', price:69, budget:'low' },
+  { id:'p111', category:'眉笔/眉粉/染眉', brand:'完美日记', name:'眉笔', colorName:'灰棕', hex:'#7A6A50', price:19, budget:'low' },
+  { id:'p112', category:'眉笔/眉粉/染眉', brand:'橘朵', name:'眉粉', colorName:'棕色', hex:'#8A7050', price:29, budget:'low' },
+  { id:'p147', category:'眉笔/眉粉/染眉', brand:'花西子', name:'眉粉', colorName:'灰棕', hex:'#7A6A50', price:69, budget:'low' },
+
+  // ─── 唇线笔 ───
+  { id:'p113', category:'唇线笔', brand:'完美日记', name:'唇线笔', colorName:'豆沙', hex:'#B07868', price:19, budget:'low' },
+  { id:'p114', category:'唇线笔', brand:'MAC', name:'唇线笔 Soar', colorName:'玫瑰', hex:'#A06860', price:130, budget:'mid' },
+  { id:'p115', category:'唇线笔', brand:'CT', name:'唇线笔 Pillow Talk', colorName:'裸粉', hex:'#C09080', price:160, budget:'mid' },
+  { id:'p116', category:'唇线笔', brand:'花西子', name:'唇线笔', colorName:'裸粉', hex:'#C09080', price:59, budget:'low' },
+
+  // ─── 口红/唇釉 ───
   { id:'p32', category:'口红/唇釉', brand:'Dior', name:'999 唇膏', colorName:'正红', hex:'#C42020', price:280, budget:'mid' },
   { id:'p33', category:'口红/唇釉', brand:'MAC', name:'Ruby Woo', colorName:'蓝调正红', hex:'#B01A30', price:190, budget:'mid' },
   { id:'p34', category:'口红/唇釉', brand:'MAC', name:'Chili', colorName:'铁锈红', hex:'#B04A3A', price:190, budget:'mid' },
@@ -42,6 +145,43 @@ module.exports = [
   { id:'p42', category:'口红/唇釉', brand:'3CE', name:'丝绒唇釉 Taupe', colorName:'红棕色', hex:'#883828', price:70, budget:'low' },
   { id:'p43', category:'口红/唇釉', brand:'Romand', name:'果汁唇釉 13', colorName:'樱桃红', hex:'#C83838', price:50, budget:'low' },
   { id:'p44', category:'口红/唇釉', brand:'MAC', name:'Mocha', colorName:'摩卡棕', hex:'#B07858', price:190, budget:'mid' },
+  { id:'p117', category:'口红/唇釉', brand:'完美日记', name:'小细跟口红 L01', colorName:'蜜桃', hex:'#E08078', price:49, budget:'low' },
+  { id:'p118', category:'口红/唇釉', brand:'Colorkey', name:'空气唇釉 R608', colorName:'红棕', hex:'#883828', price:49, budget:'low' },
+  { id:'p119', category:'口红/唇釉', brand:'花西子', name:'同心锁口红 M211', colorName:'微醺蔷薇', hex:'#C04848', price:129, budget:'mid' },
+  { id:'p120', category:'口红/唇釉', brand:'完美日记', name:'名片唇釉 003', colorName:'赤陶', hex:'#A84838', price:39, budget:'low' },
+  { id:'p121', category:'口红/唇釉', brand:'INTO YOU', name:'唇泥 EM08', colorName:'赤陶', hex:'#A04838', price:49, budget:'low' },
+  { id:'p122', category:'口红/唇釉', brand:'YSL', name:'黑管唇釉 416', colorName:'烂番茄', hex:'#C04828', price:280, budget:'mid' },
+  { id:'p123', category:'口红/唇釉', brand:'Gucci', name:'碎花口红 25号', colorName:'红调', hex:'#C03838', price:280, budget:'mid' },
+  { id:'p141', category:'口红/唇釉', brand:'Romand', name:'唇釉 06', colorName:'无花果', hex:'#C07068', price:50, budget:'low' },
+  { id:'p142', category:'口红/唇釉', brand:'3CE', name:'云朵唇釉 Speak Up', colorName:'砖红', hex:'#B04838', price:80, budget:'low' },
+
+  // ─── 卸妆 ───
   { id:'p45', category:'卸妆', brand:'Banila Co', name:'卸妆膏', colorName:'无色', hex:'#F0E8E0', price:80, budget:'low' },
-  { id:'p46', category:'防晒', brand:'安热沙', name:'小金瓶防晒', colorName:'白色', hex:'#F8F4F0', price:180, budget:'mid' }
+  { id:'p124', category:'卸妆', brand:'贝德玛', name:'卸妆水', colorName:'无色', hex:'#F0ECE8', price:79, budget:'low' },
+  { id:'p125', category:'卸妆', brand:'植村秀', name:'琥珀卸妆油', colorName:'无色', hex:'#E8D8C8', price:380, budget:'high' },
+  { id:'p126', category:'卸妆', brand:'完美日记', name:'白胖子卸妆水', colorName:'无色', hex:'#F0F0EC', price:29, budget:'low' },
+  { id:'p127', category:'卸妆', brand:'FANCL', name:'卸妆油', colorName:'无色', hex:'#F0ECE8', price:89, budget:'low' },
+
+  // ─── 防晒 ───
+  { id:'p46', category:'防晒', brand:'安热沙', name:'小金瓶防晒', colorName:'白色', hex:'#F8F4F0', price:180, budget:'mid' },
+  { id:'p128', category:'防晒', brand:'SUPERGOOP', name:'SPF50 防晒霜', colorName:'无色', hex:'#F0ECE8', price:220, budget:'mid' },
+  { id:'p129', category:'防晒', brand:'娜丽丝', name:'防晒喷雾', colorName:'无色', hex:'#F0F0EC', price:69, budget:'low' },
+  { id:'p130', category:'防晒', brand:'兰蔻', name:'轻透防晒霜', colorName:'白色', hex:'#F8F4F0', price:380, budget:'high' },
+  { id:'p131', category:'防晒', brand:'完美日记', name:'防晒霜', colorName:'白色', hex:'#F8F4F0', price:49, budget:'low' },
+  { id:'p132', category:'防晒', brand:'黛珂', name:'防晒乳', colorName:'白色', hex:'#F8F4F0', price:220, budget:'mid' },
+
+  // ─── 妆前精华/喷雾 ───
+  { id:'p47', category:'妆前精华/喷雾', brand:'完美日记', name:'妆前保湿精华液', colorName:'无色', hex:'#F0ECE8', price:69, budget:'low' },
+  { id:'p48', category:'妆前精华/喷雾', brand:'MAC', name:'妆前保湿喷雾', colorName:'无色', hex:'#E8F0E8', price:150, budget:'mid' },
+  { id:'p49', category:'妆前精华/喷雾', brand:'花西子', name:'妆前花露精华', colorName:'无色', hex:'#F0ECE8', price:139, budget:'mid' },
+  { id:'p50', category:'妆前精华/喷雾', brand:'兰芝', name:'水库精华', colorName:'无色', hex:'#E8F0E8', price:180, budget:'mid' },
+
+  // ─── 化妆刷/工具 ───
+  { id:'p133', category:'化妆刷/工具', brand:'完美日记', name:'化妆刷套装', colorName:'多色', hex:'#D8C8B8', price:79, budget:'low' },
+  { id:'p134', category:'化妆刷/工具', brand:'花西子', name:'散粉刷', colorName:'白色', hex:'#F0ECE8', price:89, budget:'low' },
+  { id:'p135', category:'化妆刷/工具', brand:'植村秀', name:'粉底刷 55号', colorName:'黑色', hex:'#3A3A3A', price:380, budget:'high' },
+  { id:'p136', category:'化妆刷/工具', brand:'Real Techniques', name:'美妆蛋', colorName:'橙色', hex:'#E8A080', price:49, budget:'low' },
+  { id:'p137', category:'化妆刷/工具', brand:'Beauty Blender', name:'美妆蛋', colorName:'粉色', hex:'#F0A0A8', price:120, budget:'mid' },
+  { id:'p138', category:'化妆刷/工具', brand:'无印良品', name:'修眉刀', colorName:'白色', hex:'#F0ECEC', price:19, budget:'low' },
+  { id:'p150', category:'化妆刷/工具', brand:'完美日记', name:'美妆蛋', colorName:'粉色', hex:'#F0B0B0', price:19, budget:'low' }
 ]

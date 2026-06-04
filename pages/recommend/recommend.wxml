@@ -120,20 +120,37 @@
         <textarea class="ai-input" value="{{aiInput}}" bindinput="onAiInput" placeholder="例如：我25岁，混油皮，想要自然日常通勤妆，预算中等，喜欢温柔奶茶色系..." maxlength="500" />
         <button bindtap="onAiSubmit" class="btn-primary btn-gen" loading="{{aiLoading}}" disabled="{{aiLoading || aiInput.trim()===''}}">🤖 AI 生成推荐</button>
       </view>
+      <block wx:if="{{aiHistory.length>0}}">
+        <view class="section-title-wrap">
+          <text class="section-title">历史记录</text>
+          <text bindtap="onClearHistory" class="clear-hint">清空全部</text>
+        </view>
+        <block wx:for="{{aiHistory}}" wx:for-item="h" wx:for-index="hi" wx:key="timestamp">
+          <view bindtap="onViewHistoryItem" data-idx="{{hi}}" class="history-item">
+            <text class="history-input">💬 {{h.title}}</text>
+            <view class="history-meta-row">
+              <text class="history-time">{{h.timeStr}}</text>
+              <text bindtap="onDeleteHistoryItem" data-idx="{{hi}}" catchtap class="history-del">删除</text>
+            </view>
+          </view>
+        </block>
+      </block>
     </block>
 
     <view wx:if="{{tabMode!=='ai'}}" class="gen-btn-wrap">
-      <button bindtap="onGenerate" class="btn-primary btn-gen">✨ 生成推荐方案</button>
+      <button bindtap="onGenerate" loading="{{genLoading}}" disabled="{{genLoading}}" class="btn-primary btn-gen">✨ 生成推荐方案</button>
     </view>
   </block>
 
   <block wx:if="{{hasResult && results}}">
     <view class="result-header">
-      <view class="result-header-left">
-        <text class="result-title">你的专属方案</text>
-        <text class="result-subtitle">共 {{results.groups.length}} 类推荐</text>
-      </view>
-      <button bindtap="onReset" class="btn-outline btn-regenerate">重新生成</button>
+      <text class="result-title">你的专属方案</text>
+      <text class="result-subtitle">共 {{results.groups.length}} 类推荐</text>
+    </view>
+
+    <view wx:if="{{results.groups.length>0}}" class="action-row">
+      <button bindtap="onAddAllToCart" class="btn-primary btn-add-all">📥 一键加入我的清单</button>
+      <button bindtap="onReset" class="btn-outline btn-regenerate-action">🔄 重新生成</button>
     </view>
 
     <block wx:if="{{results.styleInfo}}">
@@ -143,6 +160,15 @@
           <text class="rec-group-title">{{results.styleInfo.label}} 推荐</text>
         </view>
         <text class="tip-text">{{results.styleInfo.desc}}</text>
+      </view>
+    </block>
+
+    <block wx:if="{{results.aiAdvice}}">
+      <view class="rec-group tip-card">
+        <view class="rec-group-header">
+          <text class="rec-group-title">💡 AI 化妆建议</text>
+        </view>
+        <text class="tip-text">{{results.aiAdvice}}</text>
       </view>
     </block>
 
@@ -167,15 +193,6 @@
             <button bindtap="onAddToCart" data-id="{{item.id}}" class="add-cart-btn">+</button>
           </view>
         </block>
-      </view>
-    </block>
-
-    <block wx:if="{{results.aiAdvice}}">
-      <view class="rec-group tip-card">
-        <view class="rec-group-header">
-          <text class="rec-group-title">💡 AI 化妆建议</text>
-        </view>
-        <text class="tip-text">{{results.aiAdvice}}</text>
       </view>
     </block>
 

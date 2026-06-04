@@ -32,6 +32,9 @@ function enrichProfile(p, shapes, depths, occasions){
 
 Page({
   data: {
+    recentCollapsed: false,
+    userName: '',
+    userAvatar: '',
     faceShapes: taxonomy.face_shapes || [],
     depthList: taxonomy.skin_depths || [],
     occasionList: [
@@ -48,7 +51,41 @@ Page({
   onShow(){
     this.loadAll()
   },
+  onToggleRecent(){
+    this.setData({ recentCollapsed: !this.data.recentCollapsed })
+  },
+  onTapAvatar(){
+    var self = this
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success(res){
+        var path = res.tempFilePaths[0]
+        wx.setStorageSync('userProfile', Object.assign(wx.getStorageSync('userProfile') || {}, { avatar: path }))
+        self.setData({ userAvatar: path })
+      }
+    })
+  },
+  onTapName(){
+    var self = this
+    wx.showModal({
+      title: '设置昵称',
+      editable: true,
+      content: self.data.userName || '',
+      placeholderText: '输入你的昵称',
+      success(res){
+        if(res.confirm && res.content){
+          wx.setStorageSync('userProfile', Object.assign(wx.getStorageSync('userProfile') || {}, { name: res.content }))
+          self.setData({ userName: res.content })
+        }
+      }
+    })
+  },
   loadAll(){
+    var up = wx.getStorageSync('userProfile') || {}
+    this.setData({ userName: up.name || '', userAvatar: up.avatar || '' })
+
     var profile = wx.getStorageSync('skinProfile') || {
       faceShape: 'oval', depth: 'medium', undertone: 'neutral', occasion: 'daily'
     }

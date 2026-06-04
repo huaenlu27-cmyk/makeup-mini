@@ -49,9 +49,20 @@ Page({
     const id = e.currentTarget.dataset.id
     const sku = this.data.products.find(p=> p.id===id)
     if(!sku) return
-    const cart = wx.getStorageSync('cart')||[]
+    var cart = wx.getStorageSync('cart')||[]
+    for(var c = 0; c < cart.length; c++){
+      if(cart[c].id === id){
+        wx.showToast({ title: '已在清单中', icon: 'none' })
+        return
+      }
+    }
     cart.push(sku)
     wx.setStorageSync('cart', cart)
+    this._updateBadge()
     wx.showToast({ title: '已加入清单', icon: 'success' })
+  },
+  _updateBadge(){
+    var cart = wx.getStorageSync('cart') || []
+    wx.setTabBarBadge({ index: 2, text: cart.length > 99 ? '99+' : String(cart.length) })
   }
 })

@@ -31,7 +31,7 @@
   <button bindtap="savePrefs">保存偏好</button>
 </view>
 
-<block wx:if="{{recs.length}}>0">
+<block wx:if="{{recs.length>0}}">
   <view style="margin-top:12px">
     <text>推荐结果：</text>
     <block wx:for="{{recs}}" wx:for-item="blockItem" wx:for-index="bidx" wx:key="bidx">

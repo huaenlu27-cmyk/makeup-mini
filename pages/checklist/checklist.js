@@ -21,7 +21,8 @@ Page({
     collapsedGroups: {},
     filterBrand: '',
     expandedBrand: '',
-    expandedBrandItems: []
+    expandedBrandItems: [],
+    searchKeyword: ''
   },
   onLoad(){
     var app = getApp()
@@ -30,6 +31,9 @@ Page({
     var firstGroup = cats.groups && cats.groups[0]
     var firstCat = firstGroup && firstGroup.items && firstGroup.items[0]
     if(firstCat) this.selectCategory(firstCat)
+  },
+  onShow(){
+    this._updateBadge()
   },
   _getProducts(){
     var app = getApp()
@@ -44,6 +48,15 @@ Page({
   onSelectCategory(e){
     this.selectCategory(e.currentTarget.dataset.cat)
   },
+  onSearchInput(e){
+    var val = (e.detail.value || '').trim()
+    this.setData({ searchKeyword: val })
+    if(this.data.selectedCat) this.selectCategory(this.data.selectedCat)
+  },
+  onClearSearch(){
+    this.setData({ searchKeyword: '' })
+    if(this.data.selectedCat) this.selectCategory(this.data.selectedCat)
+  },
   onBudgetChange(e){
     var idx = e.detail.value
     this.setData({ budgetIndex: idx })
@@ -51,33 +64,49 @@ Page({
   },
   selectCategory(cat){
     var budget = BUDGET_VALUES[this.data.budgetIndex]
+    var keyword = this.data.searchKeyword
     var products = this._getProducts()
     var pool = products.filter(function(p){
       return p.category && cat && (p.category.indexOf(cat.split('/')[0]) > -1 || p.category === cat)
     })
     if(pool.length === 0){
-      var keyword = cat.split('/')[0]
-      pool = products.filter(function(p){ return p.name && p.name.indexOf(keyword) > -1 })
+      var kw = cat.split('/')[0]
+      pool = products.filter(function(p){ return p.name && p.name.indexOf(kw) > -1 })
+    }
+    if(keyword){
+      var kwLower = keyword.toLowerCase()
+      pool = pool.filter(function(p){
+        return (p.name && p.name.toLowerCase().indexOf(kwLower) > -1) ||
+               (p.brand && p.brand.toLowerCase().indexOf(kwLower) > -1) ||
+               (p.colorName && p.colorName.toLowerCase().indexOf(kwLower) > -1)
+      })
     }
     if(budget !== 'all') pool = pool.filter(function(p){ return p.budget === budget })
     var map = {}
     pool.forEach(function(s){
-      var key = s.hex || s.colorName || '通用'
-      if(!map[key]) map[key] = { name: s.colorName || '通用', hex: s.hex || '#f4f4f4', items: [] }
+      var key = s.colorName || '通用'
+      if(!map[key]){
+        map[key] = { name: key, hexes: [], items: [] }
+      }
+      if(s.hex && map[key].hexes.indexOf(s.hex) === -1){
+        map[key].hexes.push(s.hex)
+      }
       map[key].items.push(s)
     })
     var swatches = []
     var mapKeys = Object.keys(map)
     for(var i = 0; i < mapKeys.length; i++){
-      swatches.push(map[mapKeys[i]])
+      var sw = map[mapKeys[i]]
+      sw.visibleHexes = sw.hexes.slice(0, 5)
+      sw.extraHexCount = sw.hexes.length > 5 ? sw.hexes.length - 5 : 0
+      sw.showFallback = sw.hexes.length === 0
+      swatches.push(sw)
     }
     var brandCounts = {}
     pool.forEach(function(s){ brandCounts[s.brand] = (brandCounts[s.brand] || 0) + 1 })
     var brands = Object.keys(brandCounts).sort()
     this.setData({
       selectedCat: cat,
-      viewMode: 'swatch',
-      filterBrand: '',
       expandedKey: '',
       swatches: swatches,
       brands: brands,
@@ -93,12 +122,21 @@ Page({
       return
     }
     var products = this._getProducts()
+    var keyword = this.data.searchKeyword
     var pool = products.filter(function(p){
       return p.brand === brand && p.category && cat && (p.category.indexOf(cat.split('/')[0]) > -1 || p.category === cat)
     })
     if(pool.length === 0){
-      var keyword = cat.split('/')[0]
-      pool = products.filter(function(p){ return p.brand === brand && p.name && p.name.indexOf(keyword) > -1 })
+      var kw = cat.split('/')[0]
+      pool = products.filter(function(p){ return p.brand === brand && p.name && p.name.indexOf(kw) > -1 })
+    }
+    if(keyword){
+      var kwLower = keyword.toLowerCase()
+      pool = pool.filter(function(p){
+        return (p.name && p.name.toLowerCase().indexOf(kwLower) > -1) ||
+               (p.brand && p.brand.toLowerCase().indexOf(kwLower) > -1) ||
+               (p.colorName && p.colorName.toLowerCase().indexOf(kwLower) > -1)
+      })
     }
     var budget = BUDGET_VALUES[this.data.budgetIndex]
     if(budget !== 'all') pool = pool.filter(function(p){ return p.budget === budget })
@@ -111,7 +149,7 @@ Page({
     if(expanded){
       var swatches = this.data.swatches
       for(var i = 0; i < swatches.length; i++){
-        if(swatches[i].hex === expanded){
+        if(swatches[i].name === expanded){
           var items = swatches[i].items || []
           for(var j = 0; j < items.length; j++){
             this._addRecentView(items[j].id)
@@ -134,8 +172,8 @@ Page({
   onAddToCart(e){
     var id = e.currentTarget.dataset.id
     this._addRecentView(id)
-    var swatches = this.data.swatches
     var sku = null
+    var swatches = this.data.swatches
     for(var i = 0; i < swatches.length; i++){
       var items = swatches[i].items || []
       for(var j = 0; j < items.length; j++){
@@ -143,18 +181,35 @@ Page({
       }
       if(sku) break
     }
-    if(!sku) return
+    if(!sku){
+      var brandItems = this.data.expandedBrandItems || []
+      for(var i = 0; i < brandItems.length; i++){
+        if(brandItems[i].id === id){ sku = brandItems[i]; break }
+      }
+    }
+    if(!sku){
+      wx.showToast({ title: '未找到商品', icon: 'none' })
+      return
+    }
     var cart = wx.getStorageSync('cart') || []
+    for(var c = 0; c < cart.length; c++){
+      if(cart[c].id === id){
+        wx.showToast({ title: '已在清单中', icon: 'none' })
+        return
+      }
+    }
     cart.push(sku)
     wx.setStorageSync('cart', cart)
+    this._updateBadge()
     wx.showToast({ title: '已加入清单', icon: 'success' })
+  },
+  _updateBadge(){
+    var cart = wx.getStorageSync('cart') || []
+    var count = cart.length
+    wx.setTabBarBadge({ index: 2, text: count > 99 ? '99+' : String(count) })
   },
   setViewMode(e){
     this.setData({ viewMode: e.currentTarget.dataset.mode, expandedKey: '' })
-  },
-  clearBrandFilter(){
-    this.setData({ filterBrand: '' })
-    if(this.data.selectedCat) this.selectCategory(this.data.selectedCat)
   },
   goCart(){
     wx.switchTab({ url: '/pages/cart/cart' })

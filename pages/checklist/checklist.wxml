@@ -25,6 +25,11 @@
           </view>
         </view>
 
+        <view class="search-bar">
+          <input class="search-input" placeholder="搜索品牌 / 产品名 / 色号" value="{{searchKeyword}}" bindinput="onSearchInput" confirm-type="search" />
+          <text wx:if="{{searchKeyword}}" bindtap="onClearSearch" class="search-clear">✕</text>
+        </view>
+
         <view class="filter-bar">
           <view class="filter-bar-inner">
             <text class="filter-icon">💰</text>
@@ -38,12 +43,6 @@
         </view>
 
         <view class="content-actions">
-          <block wx:if="{{filterBrand}}">
-            <view class="brand-filter-tip">
-              <text class="brand-filter-label">{{filterBrand}}</text>
-              <text bindtap="clearBrandFilter" class="brand-filter-clear">✕</text>
-            </view>
-          </block>
           <button bindtap="setViewMode" data-mode="swatch"
             class="{{viewMode==='swatch' ? 'btn-outline-active' : 'btn-outline'}}">按色号</button>
           <button bindtap="setViewMode" data-mode="brand"
@@ -53,23 +52,31 @@
 
       <scroll-view class="content-list" scroll-y="true">
         <block wx:if="{{viewMode==='swatch'}}">
-          <view wx:if="{{filterBrand}}" class="brand-section-title">{{filterBrand}} 品牌</view>
           <view class="swatch-list">
             <block wx:for="{{swatches}}" wx:for-item="s" wx:for-index="i" wx:key="i">
               <view>
-                <view class="swatch-item {{expandedKey===s.hex ? 'swatch-item-expanded' : ''}}"
-                  bindtap="onTapSwatch" data-key="{{s.hex}}">
-                  <view class="swatch" style="background:{{s.hex}}"></view>
+                <view class="swatch-item {{expandedKey===s.name ? 'swatch-item-expanded' : ''}}"
+                  bindtap="onTapSwatch" data-key="{{s.name}}">
+                  <view class="swatch-hexes">
+                    <block wx:for="{{s.visibleHexes}}" wx:for-item="h" wx:key="h">
+                      <view class="swatch-dot" style="background:{{h}}"></view>
+                    </block>
+                    <view wx:if="{{s.extraHexCount}}" class="swatch-more">+{{s.extraHexCount}}</view>
+                    <block wx:if="{{s.showFallback}}">
+                      <view class="swatch-dot" style="background:#f4f4f4"></view>
+                    </block>
+                  </view>
                   <view class="swatch-info">
                     <text class="name">{{s.name}}</text>
                     <text class="meta">{{s.items.length}} 款</text>
                   </view>
-                  <text class="expand-icon">{{expandedKey===s.hex ? '▾' : '▸'}}</text>
+                  <text class="expand-icon">{{expandedKey===s.name ? '▾' : '▸'}}</text>
                 </view>
-                <block wx:if="{{expandedKey===s.hex}}">
+                <block wx:if="{{expandedKey===s.name}}">
                   <view class="product-sublist">
                     <block wx:for="{{s.items}}" wx:for-item="item" wx:key="id">
                       <view class="product-item">
+                        <view class="product-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
                         <view style="flex:1;min-width:0">
                           <text class="product-brand">{{item.brand}}</text>
                           <text class="product-name">{{item.name}}</text>
@@ -91,7 +98,7 @@
         <block wx:if="{{viewMode==='brand'}}">
           <block wx:for="{{brands}}" wx:for-item="b" wx:for-index="bi" wx:key="b">
             <view class="brand-group">
-              <view class="list-item">
+              <view class="list-item {{expandedBrand===b ? 'list-item-expanded' : ''}}">
                 <view>
                   <text class="name">{{b}}</text>
                   <text class="meta" style="display:block">{{brandCounts[b] || 0}} 款</text>

@@ -4,38 +4,21 @@ try{ taxonomy = require('../../data/taxonomy') }catch(e){ taxonomy = {} }
 var _fallbackProds = null
 try{ _fallbackProds = require('../../data/products') }catch(e){}
 
+var cfg = null
+try{ cfg = require('../../data/config') }catch(e){}
+var rules = null
+try{ rules = require('../../data/recommend_rules') }catch(e){}
+
 var AI_API_URL = 'https://api.deepseek.com/chat/completions'
 var AI_API_KEY = 'sk-38e08031679547b1a03efb30e2af64c2'
 
-var FOUNDATION_MAP = {
-  '浅_暖': ['p04','p09'], '浅_中性': ['p05','p06','p08'], '浅_冷': ['p08','p06'],
-  '中_暖': ['p05','p07','p09'], '中_中性': ['p05','p06','p07'], '中_冷': ['p06','p08'],
-  '深_暖': ['p07'], '深_中性': ['p07'], '深_冷': ['p06','p08']
-}
-var POWDER_MAP = {
-  '浅_暖': ['p14'], '浅_中性': ['p12','p13'], '浅_冷': ['p12'],
-  '中_暖': ['p13','p14'], '中_中性': ['p12','p13'], '中_冷': ['p12'],
-  '深_暖': ['p13'], '深_中性': ['p13'], '深_冷': ['p12']
-}
-var LIP_MAP = {
-  '暖_day': ['p33','p35','p37','p41','p43'],
-  '暖_night': ['p32','p34','p42'],
-  '中性_day': ['p39','p40','p44'],
-  '中性_night': ['p36','p38'],
-  '冷_day': ['p38','p39'],
-  '冷_night': ['p36','p40','p42']
-}
-var BLUSH_MAP = { '暖': ['p17','p18'], '中性': ['p15','p16'], '冷': ['p15','p16','p18'] }
-var EYE_MAP = { 'day': ['p22','p23'], 'night': ['p24','p23'] }
-var CONTOUR_IDS = ['p19','p20','p21']
-
 var STYLE_MAP = {
-  asian: { label:'亚裔妆', desc:'自然精致，MLBB风', ids:['p05','p09','p14','p39','p35','p44','p16','p22','p23','p12'] },
-  korean: { label:'韩妆', desc:'水光肌，渐变水光唇', ids:['p09','p14','p35','p41','p43','p38','p18','p16','p22','p23'] },
-  japanese: { label:'日杂妆', desc:'温暖大地色，枫叶红棕', ids:['p05','p04','p12','p33','p37','p40','p44','p17','p22','p23'] },
-  western: { label:'欧美妆', desc:'高遮瑕，立体轮廓，烟熏眼', ids:['p06','p08','p13','p32','p36','p34','p19','p20','p24','p25','p28'] },
-  thai: { label:'泰妆', desc:'哑光高遮瑕，金棕古铜调', ids:['p07','p13','p34','p37','p42','p17','p18','p22','p24'] },
-  french: { label:'法式慵懒妆', desc:'半哑光质感，一抹红唇', ids:['p04','p05','p12','p36','p39','p25','p28','p13'] }
+  asian: { label:'亚裔妆', desc:'自然精致，MLBB风', ids:['p05','p09','p14','p39','p35','p44','p16','p22','p23','p12','p21','p01'] },
+  korean: { label:'韩妆', desc:'水光肌，渐变水光唇', ids:['p09','p14','p35','p41','p43','p38','p18','p16','p22','p23','p48','p80'] },
+  japanese: { label:'日杂妆', desc:'温暖大地色，枫叶红棕', ids:['p05','p04','p12','p33','p37','p40','p44','p17','p22','p23','p20','p93'] },
+  western: { label:'欧美妆', desc:'高遮瑕，立体轮廓，烟熏眼', ids:['p06','p08','p13','p32','p36','p34','p19','p20','p24','p25','p28','p92','p86'] },
+  thai: { label:'泰妆', desc:'哑光高遮瑕，金棕古铜调', ids:['p07','p13','p34','p37','p42','p17','p18','p22','p24','p90','p86'] },
+  french: { label:'法式慵懒妆', desc:'半哑光质感，一抹红唇', ids:['p04','p05','p12','p36','p39','p25','p28','p13','p21','p44','p94'] }
 }
 
 function getDepthKey(d){
@@ -84,8 +67,10 @@ Page({
     tipTop: 0,
     tipLeft: 0,
     tabMode: 'skin',
+    genLoading: false,
     aiInput: '',
     aiLoading: false,
+    aiHistory: [],
     styleList: [
       { key:'asian', name:'亚裔妆', icon:'🌏' },
       { key:'korean', name:'韩妆', icon:'🇰🇷' },
@@ -96,18 +81,29 @@ Page({
     ]
   },
   onLoad(){
+    var savedMode = wx.getStorageSync('_savedTabMode') || 'skin'
+    this.setData({ tabMode: savedMode })
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
     if(theme) this.setData({ theme: theme })
     this._loadProfile()
+    this._loadAIHistory()
   },
   onShow(){
+    this._updateBadge()
     var fromProfile = wx.getStorageSync('_fromProfile')
     if(fromProfile){
       this.setData({ tabMode: 'skin', hasResult: false, results: null })
       wx.setStorageSync('_fromProfile', false)
+      wx.removeStorageSync('_lastResults')
+    } else {
+      var last = wx.getStorageSync('_lastResults')
+      if(last && !this.data.hasResult){
+        this.setData({ results: last.results, hasResult: true })
+      }
     }
     this._loadProfile()
+    this._loadAIHistory()
   },
   _loadProfile(){
     var saved = wx.getStorageSync('skinProfile')
@@ -146,7 +142,9 @@ Page({
     this.setData({ showDepthTip: false, showUndertoneTip: false })
   },
   onTabMode(e){
-    this.setData({ tabMode: e.currentTarget.dataset.mode })
+    var mode = e.currentTarget.dataset.mode
+    this.setData({ tabMode: mode })
+    wx.setStorageSync('_savedTabMode', mode)
   },
   onSelStyle(e){
     this.setData({ selStyle: e.currentTarget.dataset.key })
@@ -164,6 +162,7 @@ Page({
   onSelUndertone(e){ this.setData({ selUndertone: e.currentTarget.dataset.key }) },
   onSelOccasion(e){ this.setData({ selOccasion: e.currentTarget.dataset.key }) },
   onGenerate(){
+    this.setData({ genLoading: true })
     var app = getApp()
     var prods = (app && app.globalData && app.globalData.products) || _fallbackProds || []
     if(prods.length === 0){
@@ -182,24 +181,34 @@ Page({
     var ok = getOccKey(this.data.selOccasion)
     var groups = []
 
-    var baseItems = findByIds(prods, FOUNDATION_MAP[dk+'_'+uk]||[]).concat(
-      findByIds(prods, POWDER_MAP[dk+'_'+uk]||[]))
+    var fMap = (rules && rules.foundation_by_depth_undertone) || {}
+    var lMap = (rules && rules.lip_by_undertone_occasion) || {}
+    var bMap = (rules && rules.blush_by_undertone) || {}
+    var eMap = (rules && rules.eyeshadow_by_occasion) || {}
+    var cMap = (rules && rules.contour_by_face_shape) || {}
+    var hMap = (rules && rules.highlight_by_undertone) || {}
+    var pMap = (rules && rules.powder_by_skin) || {}
+
+    var depthToSkin = { very_fair:'normal', fair:'normal', light:'normal', medium:'combination', tan:'oily', deep:'oily' }
+    var baseItems = findByIds(prods, (fMap[dk+'_'+uk]||[])).concat(
+      findByIds(prods, (pMap[depthToSkin[this.data.selDepth]||'normal']||[])))
     if(baseItems.length > 0){
       groups.push({ title:'底妆推荐', icon:'🔵', items:baseItems })
     }
-    var lipItems = findByIds(prods, LIP_MAP[uk+'_'+ok]||[])
+    var lipItems = findByIds(prods, lMap[uk+'_'+ok]||[])
     if(lipItems.length > 0){
       groups.push({ title:'唇部推荐', icon:'🔴', items:lipItems })
     }
-    var blushItems = findByIds(prods, BLUSH_MAP[uk]||[])
+    var blushItems = findByIds(prods, bMap[uk]||[])
     if(blushItems.length > 0){
       groups.push({ title:'腮红推荐', icon:'🌸', items:blushItems })
     }
-    var eyeItems = findByIds(prods, EYE_MAP[ok]||[])
+    var eyeItems = findByIds(prods, eMap[ok]||[])
     if(eyeItems.length > 0){
       groups.push({ title:'眼妆推荐', icon:'👁️', items:eyeItems })
     }
-    var ctItems = findByIds(prods, CONTOUR_IDS)
+    var ctItems = findByIds(prods, (cMap[this.data.selFace]||[])).concat(
+      findByIds(prods, (hMap[uk]||[])))
     if(ctItems.length > 0){
       groups.push({ title:'修容 & 高光', icon:'✨', items:ctItems })
     }
@@ -213,7 +222,8 @@ Page({
     this.setData({
       results: { groups: groups, faceShapeTip: tip },
       hasResult: true,
-      genKey: this.data.genKey + 1
+      genKey: this.data.genKey + 1,
+      genLoading: false
     })
   },
   _genByStyle(prods){
@@ -223,10 +233,9 @@ Page({
     var allIds = styleInfo.ids || []
     var items = findByIds(prods, allIds)
 
-    var catOrder = ['隔离/妆前乳','粉底液/气垫','粉饼/散粉','眼影','眼线','睫毛膏','腮红','修容/修颜','高光','口红/唇釉','遮瑕','眉笔/眉粉/染眉']
-    var catIcon = { '隔离/妆前乳':'🧴','粉底液/气垫':'🔵','粉饼/散粉':'⚪','眼影':'👁️','眼线':'✏️','睫毛膏':'🫦','腮红':'🌸','修容/修颜':'✨','高光':'💎','口红/唇釉':'💄','遮瑕':'🎨','眉笔/眉粉/染眉':'✍️' }
-
     var groups = []
+    var catOrder = (cfg && cfg.CAT_ORDER) || []
+    var catIcon = (cfg && cfg.CAT_ICON) || {}
     for(var c = 0; c < catOrder.length; c++){
       var catItems = []
       for(var i = 0; i < items.length; i++){
@@ -237,11 +246,14 @@ Page({
       }
     }
 
+    var newResults = { groups: groups, styleInfo: styleInfo }
     this.setData({
-      results: { groups: groups, styleInfo: styleInfo },
+      results: newResults,
       hasResult: true,
-      genKey: this.data.genKey + 1
+      genKey: this.data.genKey + 1,
+      genLoading: false
     })
+    wx.setStorageSync('_lastResults', { results: newResults, tabMode: this.data.tabMode })
   },
   onAddToCart(e){
     var id = e.currentTarget.dataset.id
@@ -265,9 +277,51 @@ Page({
     }
     if(!sku) return
     var cart = wx.getStorageSync('cart') || []
+    for(var c = 0; c < cart.length; c++){
+      if(cart[c].id === id){
+        wx.showToast({ title: '已在清单中', icon: 'none' })
+        return
+      }
+    }
     cart.push(sku)
     wx.setStorageSync('cart', cart)
+    this._updateBadge()
     wx.showToast({ title:'已加入清单', icon:'success' })
+  },
+  _updateBadge(){
+    var cart = wx.getStorageSync('cart') || []
+    wx.setTabBarBadge({ index: 2, text: cart.length > 99 ? '99+' : String(cart.length) })
+  },
+  onAddAllToCart(){
+    var groups = this.data.results.groups
+    if(!groups || groups.length === 0) return
+    var allItems = []
+    for(var g = 0; g < groups.length; g++){
+      var items = groups[g].items || []
+      for(var i = 0; i < items.length; i++){
+        allItems.push(items[i])
+      }
+    }
+    if(allItems.length === 0) return
+    var cart = wx.getStorageSync('cart') || []
+    var addedCount = 0
+    for(var i = 0; i < allItems.length; i++){
+      var exists = false
+      for(var c = 0; c < cart.length; c++){
+        if(cart[c].id === allItems[i].id){ exists = true; break }
+      }
+      if(!exists){
+        cart.push(allItems[i])
+        addedCount++
+      }
+    }
+    wx.setStorageSync('cart', cart)
+    this._updateBadge()
+    if(addedCount === 0){
+      wx.showToast({ title: '全部商品已在清单中', icon: 'none' })
+    } else {
+      wx.showToast({ title: '已加入 ' + addedCount + ' 件商品', icon: 'success' })
+    }
   },
   onReset(){
     this.setData({ hasResult: false, results: null })
@@ -304,17 +358,26 @@ Page({
         temperature: 0.7,
         max_tokens: 2048
       },
+      timeout: 60000,
       success(res){
-        if(res.statusCode !== 200 || !res.data || !res.data.choices || !res.data.choices[0]){
-          wx.showToast({ title: 'AI 请求失败', icon: 'none' })
+        if(res.statusCode !== 200){
+          var msg = 'AI 请求失败'
+          if(res.data && res.data.error && res.data.error.message) msg = res.data.error.message
+          wx.showToast({ title: msg, icon: 'none' })
+          self.setData({ aiLoading: false })
+          return
+        }
+        if(!res.data || !res.data.choices || !res.data.choices[0]){
+          wx.showToast({ title: 'AI 返回格式异常', icon: 'none' })
           self.setData({ aiLoading: false })
           return
         }
         var content = res.data.choices[0].message.content
         self._genByAI(content, prods)
       },
-      fail(){
-        wx.showToast({ title: '网络错误，请重试', icon: 'none' })
+      fail(err){
+        var msg = (err.errMsg && err.errMsg.indexOf('timeout') > -1) ? '请求超时，请重试' : '网络错误，请重试'
+        wx.showToast({ title: msg, icon: 'none' })
         self.setData({ aiLoading: false })
       }
     })
@@ -326,14 +389,17 @@ Page({
     var productJSON = JSON.stringify(list, null, 2)
     return '你是一个专业的美妆顾问。以下是可推荐的商品库：\n' + productJSON + '\n\n' +
       '请根据用户的描述，从上述商品库中选择最合适的商品，并以以下 JSON 格式回复（不要包含其他文字）：\n' +
-      '{\n  "advice": "详细的化妆建议（用中文）",\n  "product_ids": ["p04", "p09"]\n}\n\n' +
+      '{\n  "title": "通勤自然妆推荐",\n  "advice": "详细的化妆建议（用中文）",\n  "product_ids": ["p04", "p09"]\n}\n\n' +
       '要求：\n' +
+      '- title 用 15 字以内概括用户的问题，作为标题\n' +
       '- advice 用中文，给出具体的化妆步骤和搭配建议\n' +
       '- product_ids 只包含上述商品库中存在的 ID，每个品类推荐 1-2 款\n' +
+      '- 重要：advice 中提到的每一个商品都必须出现在 product_ids 中，不可遗漏\n' +
       '- 如果用户提到了预算、肤色、场合等信息，优先匹配\n' +
       '- 如果没有合适的商品，product_ids 返回空数组'
   },
   _genByAI(content, prods){
+    content = content.replace(/```json?\s*|\s*```/g, '').trim()
     try {
       var result = JSON.parse(content)
       if(!result.advice && !result.product_ids){
@@ -351,8 +417,8 @@ Page({
         if(prods[j].id === ids[i]){ items.push(prods[j]); break }
       }
     }
-    var catOrder = ['隔离/妆前乳','粉底液/气垫','粉饼/散粉','眼影','眼线','睫毛膏','腮红','修容/修颜','高光','口红/唇釉','遮瑕','眉笔/眉粉/染眉']
-    var catIcon = { '隔离/妆前乳':'🧴','粉底液/气垫':'🔵','粉饼/散粉':'⚪','眼影':'👁️','眼线':'✏️','睫毛膏':'🫦','腮红':'🌸','修容/修颜':'✨','高光':'💎','口红/唇釉':'💄','遮瑕':'🎨','眉笔/眉粉/染眉':'✍️' }
+    var catOrder = (cfg && cfg.CAT_ORDER) || []
+    var catIcon = (cfg && cfg.CAT_ICON) || {}
     var groups = []
     for(var c = 0; c < catOrder.length; c++){
       var catItems = []
@@ -363,11 +429,67 @@ Page({
         groups.push({ title: catOrder[c], icon: catIcon[catOrder[c]] || '📦', items: catItems })
       }
     }
+    var input = this.data.aiInput
+    var results = { groups: groups, aiAdvice: result.advice || '' }
     this.setData({
-      results: { groups: groups, aiAdvice: result.advice || '' },
+      results: results,
       hasResult: true,
       aiLoading: false,
       aiInput: ''
     })
+    wx.setStorageSync('_lastResults', { results: results, tabMode: this.data.tabMode })
+    var title = result.title || input.slice(0, 20)
+    this._saveAIHistory(input, title, results)
+  },
+  _saveAIHistory(input, title, results){
+    var history = wx.getStorageSync('aiHistory') || []
+    history.unshift({
+      input: input,
+      title: title,
+      results: results,
+      timestamp: Date.now()
+    })
+    if(history.length > 20) history = history.slice(0, 20)
+    history = this._formatHistory(history)
+    wx.setStorageSync('aiHistory', history)
+    this.setData({ aiHistory: history })
+  },
+  _loadAIHistory(){
+    var history = wx.getStorageSync('aiHistory') || []
+    history = this._formatHistory(history)
+    this.setData({ aiHistory: history })
+  },
+  _formatHistory(history){
+    var now = Date.now()
+    for(var i = 0; i < history.length; i++){
+      var diff = Math.floor((now - history[i].timestamp) / 1000)
+      if(diff < 60) history[i].timeStr = '刚刚'
+      else if(diff < 3600) history[i].timeStr = Math.floor(diff / 60) + '分钟前'
+      else if(diff < 86400) history[i].timeStr = Math.floor(diff / 3600) + '小时前'
+      else history[i].timeStr = Math.floor(diff / 86400) + '天前'
+    }
+    return history
+  },
+  onViewHistoryItem(e){
+    var idx = e.currentTarget.dataset.idx
+    var history = this.data.aiHistory
+    if(!history[idx]) return
+    var results = history[idx].results
+    this.setData({
+      results: results,
+      hasResult: true
+    })
+    wx.setStorageSync('_lastResults', { results: results, tabMode: this.data.tabMode })
+  },
+  onDeleteHistoryItem(e){
+    var idx = e.currentTarget.dataset.idx
+    var history = this.data.aiHistory
+    history.splice(idx, 1)
+    wx.setStorageSync('aiHistory', history)
+    this.setData({ aiHistory: history })
+  },
+  onClearHistory(){
+    wx.removeStorageSync('aiHistory')
+    this.setData({ aiHistory: [] })
   }
 })
