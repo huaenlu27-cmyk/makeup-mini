@@ -1,4 +1,4 @@
-<view class="page-wrap">
+<view class="page-wrap" style="background:{{theme.colors.primaryBg}};color:{{theme.colors.text}}">
   <view class="layout">
     <scroll-view class="sidebar" scroll-y="true" enable-back-to-top>
       <block wx:for="{{categories.groups}}" wx:for-item="group" wx:for-index="gi" wx:key="gi">

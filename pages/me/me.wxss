@@ -2,6 +2,8 @@
   padding: 20px 16px 90px;
   min-height: 100vh;
   box-sizing: border-box;
+  background: var(--bg);
+  color: var(--text);
 }
 .profile-header {
   display: flex;
@@ -13,7 +15,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #F5D6DF;
+  background: var(--primary-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,11 +31,11 @@
 .profile-name {
   font-size: 20px;
   font-weight: 700;
-  color: #3A2A30;
+  color: var(--text);
 }
 .section-card {
-  background: #FFFFFF;
-  border: 1px solid #EDE4E7;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
   margin-bottom: 14px;
@@ -51,7 +53,7 @@
 }
 .section-arrow {
   font-size: 10px;
-  color: #CAB8BF;
+  color: var(--muted);
   transition: transform 0.2s;
 }
 .section-arrow-collapsed {
@@ -60,11 +62,11 @@
 .section-title {
   font-size: 14px;
   font-weight: 600;
-  color: #3A2A30;
+  color: var(--text);
 }
 .section-hint {
   font-size: 11px;
-  color: #CAB8BF;
+  color: var(--muted);
 }
 .profile-fields {
   margin-bottom: 14px;
@@ -73,14 +75,14 @@
   display: flex;
   align-items: center;
   padding: 10px 0;
-  border-top: 1px solid #F5F0F2;
+  border-top: 1px solid var(--bg);
 }
 .profile-row:first-child {
   border-top: none;
 }
 .row-label {
   font-size: 13px;
-  color: #A89098;
+  color: var(--muted);
   width: 72px;
   flex-shrink: 0;
 }
@@ -88,11 +90,11 @@
   flex: 1;
   font-size: 13px;
   font-weight: 500;
-  color: #3A2A30;
+  color: var(--text);
 }
 .row-arrow {
   font-size: 12px;
-  color: #CAB8BF;
+  color: var(--muted);
   margin-left: 8px;
 }
 .btn-full {
@@ -105,24 +107,24 @@
 }
 .picker-chip {
   padding: 6px 12px;
-  background: #F8F4F6;
+  background: var(--chip-bg);
   border-radius: 8px;
   font-size: 13px;
-  color: #3A2A30;
+  color: var(--text);
 }
 .recent-item {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 8px 0;
-  border-top: 1px solid #F5F0F2;
+  border-top: 1px solid var(--bg);
 }
 .recent-item .swatch {
   width: 20px;
   height: 20px;
   border-radius: 50%;
   flex-shrink: 0;
-  border: 1px solid #EDE4E7;
+  border: 1px solid var(--border);
 }
 .recent-item:first-of-type {
   border-top: none;
@@ -134,12 +136,12 @@
 .recent-name {
   font-size: 13px;
   font-weight: 500;
-  color: #3A2A30;
+  color: var(--text);
   display: block;
 }
 .recent-meta {
   font-size: 11px;
-  color: #A89098;
+  color: var(--muted);
   display: block;
   margin-top: 1px;
 }

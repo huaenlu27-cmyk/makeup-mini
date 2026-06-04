@@ -4,16 +4,18 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
 }
 .page-title {
   font-size: 20px;
   font-weight: 700;
-  color: #3A2A30;
+  color: var(--text);
   margin-bottom: 4px;
 }
 .page-subtitle {
   font-size: 12px;
-  color: #A89098;
+  color: var(--muted);
   display: block;
   margin-bottom: 16px;
 }
@@ -30,16 +32,16 @@
 .empty-text {
   font-size: 15px;
   font-weight: 500;
-  color: #3A2A30;
+  color: var(--text);
   margin-bottom: 4px;
 }
 .empty-hint {
   font-size: 12px;
-  color: #A89098;
+  color: var(--muted);
 }
 .cart-group {
-  background: #FFFFFF;
-  border: 1px solid #EDE4E7;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 12px;
@@ -53,18 +55,18 @@
 .cart-group-title {
   font-size: 14px;
   font-weight: 600;
-  color: #3A2A30;
+  color: var(--text);
 }
 .cart-group-count {
   font-size: 11px;
-  color: #A89098;
+  color: var(--muted);
   margin-left: auto;
 }
 .cart-item {
   display: flex;
   gap: 12px;
   padding: 10px 0;
-  border-top: 1px solid #F5F0F2;
+  border-top: 1px solid var(--bg);
   align-items: center;
 }
 .cart-item-main {
@@ -80,7 +82,7 @@
   padding-bottom: 0;
 }
 .item-hover {
-  background: #F8F4F6;
+  background: var(--chip-bg);
   border-radius: 8px;
 }
 .cart-item-left {
@@ -98,7 +100,7 @@
 .cart-item-info .name {
   font-size: 13px;
   font-weight: 600;
-  color: #3A2A30;
+  color: var(--text);
 }
 .btn-remove-item {
   flex-shrink: 0;
@@ -108,7 +110,7 @@
   padding: 0;
   margin: 0;
   font-size: 12px;
-  color: #C8B4BC;
+  color: var(--muted);
   background: none;
   text-align: center;
   border-radius: 50%;
@@ -118,14 +120,14 @@
 }
 .cart-item-info .meta {
   font-size: 11px;
-  color: #A89098;
+  color: var(--muted);
   display: block;
   margin-top: 1px;
 }
 .cart-price {
   font-size: 14px;
   font-weight: 600;
-  color: #E595A8;
+  color: var(--primary);
   display: block;
   margin-top: 4px;
 }
@@ -137,8 +139,8 @@
   display: flex;
   gap: 10px;
   padding: 10px 16px;
-  background: #FFFFFF;
-  border-top: 1px solid #EDE4E7;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
   box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
   align-items: center;
 }
@@ -149,12 +151,12 @@
 }
 .total-label {
   font-size: 11px;
-  color: #A89098;
+  color: var(--muted);
 }
 .total-price {
   font-size: 17px;
   font-weight: 700;
-  color: #E595A8;
+  color: var(--primary);
 }
 .btn-clear {
   flex: 1;

@@ -1,4 +1,4 @@
-<view class="page-wrap">
+<view class="page-wrap" style="background:{{theme.colors.primaryBg}};color:{{theme.colors.text}}">
   <view class="profile-header">
     <view class="avatar" bindtap="onTapAvatar">
       <image wx:if="{{userAvatar}}" class="avatar-img" src="{{userAvatar}}" mode="aspectFill"></image>

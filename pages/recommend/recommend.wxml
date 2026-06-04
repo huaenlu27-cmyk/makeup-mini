@@ -1,4 +1,4 @@
-<view class="page-wrap">
+<view class="page-wrap" style="background:{{theme.colors.primaryBg}};color:{{theme.colors.text}}">
   <view class="page-title">智能推荐</view>
   <text class="page-subtitle">选择你的特征，获取专属妆容方案</text>
 
@@ -145,7 +145,10 @@
   <block wx:if="{{hasResult && results}}">
     <view class="result-header">
       <text class="result-title">你的专属方案</text>
-      <text class="result-subtitle">共 {{results.groups.length}} 类推荐</text>
+      <view class="result-header-right">
+        <button open-type="share" class="btn-share-text">分享方案</button>
+        <button bindtap="onSaveImage" class="btn-share-text">生成图片</button>
+      </view>
     </view>
 
     <view wx:if="{{results.groups.length>0}}" class="action-row">
@@ -169,6 +172,15 @@
           <text class="rec-group-title">💡 AI 化妆建议</text>
         </view>
         <text class="tip-text">{{results.aiAdvice}}</text>
+      </view>
+    </block>
+
+    <block wx:if="{{results.faceShapeTip}}">
+      <view class="rec-group tip-card">
+        <view class="rec-group-header">
+          <text class="rec-group-title">💡 脸型妆容建议</text>
+        </view>
+        <text class="tip-text">{{results.faceShapeTip}}</text>
       </view>
     </block>
 
@@ -196,15 +208,6 @@
       </view>
     </block>
 
-    <block wx:if="{{results.faceShapeTip}}">
-      <view class="rec-group tip-card">
-        <view class="rec-group-header">
-          <text class="rec-group-title">💡 脸型妆容建议</text>
-        </view>
-        <text class="tip-text">{{results.faceShapeTip}}</text>
-      </view>
-    </block>
-
     <view class="gen-btn-wrap">
       <button bindtap="onReset" class="btn-primary btn-gen">🔄 重新匹配</button>
     </view>
@@ -222,4 +225,5 @@
       <text class="tip-float-text">肤色基调指皮肤底层的色相倾向，分暖黄调、冷粉调和中性皮。看手腕血管：偏绿色为暖皮，偏蓝紫色为冷皮，蓝绿兼有为中性皮。</text>
     </view>
   </view>
+  <canvas type="2d" id="shareCanvas" style="width:300px;height:2000px;position:fixed;top:-9999px;left:-9999px;pointer-events:none"></canvas>
 </view>

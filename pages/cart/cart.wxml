@@ -1,4 +1,4 @@
-<view class="page-wrap">
+<view class="page-wrap" style="background:{{theme.colors.primaryBg}};color:{{theme.colors.text}}">
   <view class="page-title">我的清单</view>
   <text class="page-subtitle">已收集 {{items.length}} 件商品</text>
 
@@ -45,6 +45,6 @@
     <text class="total-label">合计</text>
     <text class="total-price">¥{{totalPrice}}</text>
   </view>
-  <button bindtap="clearCart" class="btn-outline btn-clear">清空清单</button>
-  <button bindtap="goChecklist" class="btn-primary btn-continue">继续选购</button>
+  <button bindtap="clearCart" class="btn-outline btn-clear" style="background:{{theme.colors.surface}};color:{{theme.colors.muted}};border-color:{{theme.colors.border}}">清空清单</button>
+  <button bindtap="goChecklist" class="btn-primary btn-continue" style="background:{{theme.colors.accent}}">继续选购</button>
 </view>

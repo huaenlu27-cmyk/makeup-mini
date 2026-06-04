@@ -6,6 +6,12 @@ var _fallbackProds = null
 try{ _fallbackCats = require('../../data/categories') }catch(e){}
 try{ _fallbackProds = require('../../data/products') }catch(e){}
 
+function _themeStyles(t){
+  if(!t || !t.colors) return {}
+  var c = t.colors
+  return { bg:c.primaryBg, surface:c.surface, text:c.text, muted:c.muted, accent:c.accent, accentL:c.accentLight, border:c.border, chipBg:c.chipBg }
+}
+
 Page({
   data: {
     categories: { groups: [] },
@@ -26,13 +32,17 @@ Page({
   },
   onLoad(){
     var app = getApp()
+    var theme = (app && app.globalData && app.globalData.theme) || null
     var cats = (app && app.globalData && app.globalData.categories) || _fallbackCats || { groups: [] }
-    this.setData({ categories: cats })
+    this.setData({ categories: cats, theme: theme, s: _themeStyles(theme) })
     var firstGroup = cats.groups && cats.groups[0]
     var firstCat = firstGroup && firstGroup.items && firstGroup.items[0]
     if(firstCat) this.selectCategory(firstCat)
   },
   onShow(){
+    var app = getApp()
+    var theme = (app && app.globalData && app.globalData.theme) || null
+    if(theme) this.setData({ theme: theme, s: _themeStyles(theme) })
     this._updateBadge()
   },
   _getProducts(){

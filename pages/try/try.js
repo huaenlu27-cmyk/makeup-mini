@@ -11,6 +11,12 @@ try{
   products = require('../../data/products')
 }catch(e){ try{ products = require('../../data/products.json') }catch(e2){ products = [] } }
 
+function _themeStyles(t){
+  if(!t || !t.colors) return {}
+  var c = t.colors
+  return { bg:c.primaryBg, surface:c.surface, text:c.text, muted:c.muted, accent:c.accent, accentL:c.accentLight, border:c.border, chipBg:c.chipBg }
+}
+
 function _matchTone(hex, tone){
   if(!hex) return tone === '中'
   var r = parseInt(hex.slice(1,3), 16) / 255
@@ -33,7 +39,7 @@ Page({
     const app = getApp()
     let theme = (app && app.globalData && app.globalData.theme) ? app.globalData.theme : null
     if(!theme){ try{ theme = require('../../theme') }catch(e){ theme = null } }
-    if(theme) this.setData({ theme })
+    if(theme) this.setData({ theme, s: _themeStyles(theme) })
   },
   setTone(e){
     this.setData({ tone: e.currentTarget.dataset.tone })

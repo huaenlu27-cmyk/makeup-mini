@@ -43,6 +43,12 @@ function findByIds(prods, ids){
   return r
 }
 
+function _themeStyles(t){
+  if(!t || !t.colors) return {}
+  var c = t.colors
+  return { bg:c.primaryBg, surface:c.surface, text:c.text, muted:c.muted, accent:c.accent, accentL:c.accentLight, border:c.border, chipBg:c.chipBg }
+}
+
 Page({
   data: {
     faceShapes: taxonomy.face_shapes || [],
@@ -85,12 +91,15 @@ Page({
     this.setData({ tabMode: savedMode })
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
-    if(theme) this.setData({ theme: theme })
+    if(theme) this.setData({ theme: theme, s: _themeStyles(theme) })
     this._loadProfile()
     this._loadAIHistory()
   },
   onShow(){
     this._updateBadge()
+    var app = getApp()
+    var theme = (app && app.globalData && app.globalData.theme) || null
+    if(theme) this.setData({ theme: theme, s: _themeStyles(theme) })
     var fromProfile = wx.getStorageSync('_fromProfile')
     if(fromProfile){
       this.setData({ tabMode: 'skin', hasResult: false, results: null })
@@ -291,6 +300,154 @@ Page({
   _updateBadge(){
     var cart = wx.getStorageSync('cart') || []
     wx.setTabBarBadge({ index: 2, text: cart.length > 99 ? '99+' : String(cart.length) })
+  },
+  onShareAppMessage(){
+    var results = this.data.results
+    var title = '我的专属美妆方案'
+    if(results && results.groups && results.groups.length > 0){
+      var names = results.groups.map(function(g){ return g.title }).join('、')
+      title = title + ' - ' + names
+    }
+    return { title: title, path: '/pages/recommend/recommend' }
+  },
+  onSaveImage(){
+    var results = this.data.results
+    if(!results || !results.groups || results.groups.length === 0){
+      wx.showToast({ title: '暂无方案可生成', icon: 'none' })
+      return
+    }
+    wx.showLoading({ title: '生成中...' })
+    var self = this
+    wx.createSelectorQuery().select('#shareCanvas').node(function(res){
+      var canvas = res.node
+      var ctx = canvas.getContext('2d')
+      var W = 300
+      var P = 20
+      var y = P
+      var dpr = wx.getSystemInfoSync().pixelRatio || 2
+
+      // compute height
+      var h = P + 40 + 24 + 8
+      for(var g = 0; g < results.groups.length; g++){
+        h += 30
+        h += (results.groups[g].items || []).length * 28
+      }
+      h += 36 + P
+
+      // set canvas size (retina)
+      canvas.width = W * dpr
+      canvas.height = h * dpr
+      ctx.scale(dpr, dpr)
+
+      // background
+      ctx.fillStyle = '#FFFFFF'
+      ctx.fillRect(0, 0, W, h)
+
+      // title
+      ctx.fillStyle = '#3A2A30'
+      ctx.font = 'bold 18px sans-serif'
+      ctx.fillText('我的专属美妆方案', P, y + 24)
+      y += 40
+
+      // date
+      var d = new Date()
+      var ds = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
+      ctx.fillStyle = '#A89098'
+      ctx.font = '12px sans-serif'
+      ctx.fillText(ds, P, y + 16)
+      y += 24 + 8
+
+      // groups
+      for(var g = 0; g < results.groups.length; g++){
+        var group = results.groups[g]
+        // group title bg
+        ctx.fillStyle = '#F8F4F6'
+        ctx.fillRect(P, y, W - P * 2, 22)
+        ctx.fillStyle = '#E595A8'
+        ctx.font = 'bold 13px sans-serif'
+        ctx.fillText(group.title, P + 10, y + 16)
+        y += 30
+
+        var items = group.items || []
+        for(var i = 0; i < items.length; i++){
+          var item = items[i]
+          // swatch dot
+          ctx.beginPath()
+          ctx.arc(P + 8, y + 12, 7, 0, 2 * Math.PI)
+          ctx.fillStyle = item.hex || '#f4f4f4'
+          ctx.fill()
+          ctx.strokeStyle = '#EDE4E7'
+          ctx.lineWidth = 0.5
+          ctx.stroke()
+
+          // name
+          ctx.fillStyle = '#3A2A30'
+          ctx.font = '13px sans-serif'
+          ctx.fillText(item.brand + ' ' + item.name, P + 22, y + 16)
+
+          // price
+          ctx.fillStyle = '#E595A8'
+          ctx.font = '12px sans-serif'
+          ctx.textAlign = 'right'
+          ctx.fillText('¥' + item.price, W - P, y + 16)
+          ctx.textAlign = 'left'
+
+          y += 28
+        }
+      }
+
+      // footer
+      y += 8
+      ctx.fillStyle = '#CAB8BF'
+      ctx.font = '11px sans-serif'
+      ctx.fillText('由 美妆选购小助手 生成', P, y + 16)
+
+      wx.canvasToTempFilePath({
+        canvas: canvas,
+        x: 0, y: 0,
+        width: canvas.width, height: canvas.height,
+        destWidth: canvas.width, destHeight: canvas.height,
+        success: function(r){
+          wx.hideLoading()
+          wx.getSetting({
+            success: function(set){
+              if(set.authSetting['scope.writePhotosAlbum']){
+                wx.saveImageToPhotosAlbum({
+                  filePath: r.tempFilePath,
+                  success: function(){ wx.showToast({ title: '已保存到相册', icon: 'success' }) },
+                  fail: function(){ wx.showToast({ title: '保存失败', icon: 'none' }) }
+                })
+              } else {
+                wx.authorize({
+                  scope: 'scope.writePhotosAlbum',
+                  success: function(){
+                    wx.saveImageToPhotosAlbum({
+                      filePath: r.tempFilePath,
+                      success: function(){ wx.showToast({ title: '已保存到相册', icon: 'success' }) },
+                      fail: function(){ wx.showToast({ title: '保存失败', icon: 'none' }) }
+                    })
+                  },
+                  fail: function(){
+                    wx.showModal({
+                      title: '需要权限',
+                      content: '请允许访问相册以保存图片',
+                      success: function(m){
+                        if(m.confirm) wx.openSetting()
+                      }
+                    })
+                  }
+                })
+              }
+            }
+          })
+        },
+        fail: function(e){
+          wx.hideLoading()
+          wx.showToast({ title: '生成失败', icon: 'none' })
+          console.error(e)
+        }
+      })
+    }).exec()
   },
   onAddAllToCart(){
     var groups = this.data.results.groups

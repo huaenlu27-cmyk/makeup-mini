@@ -1,4 +1,4 @@
-<view class="header" style="background: {{theme.colors.primaryBg}}; color: {{theme.colors.text}}; padding:12px 0;">
+<view class="header" style="background:{{theme.colors.primaryBg}};color:{{theme.colors.text}};padding:12px 0;">
   <view style="padding-left:12px;">
     <text style="font-weight:700;font-size:18px;color:{{theme.colors.text}}">试色与脸型推荐</text>
   </view>
