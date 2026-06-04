@@ -164,6 +164,25 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
+.ai-section {
+  margin-bottom: 20px;
+}
+.ai-input {
+  width: 100%;
+  min-height: 120px;
+  background: #FFFFFF;
+  border: 1px solid #EDE4E7;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: #3A2A30;
+  line-height: 1.6;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+}
+.ai-input::placeholder {
+  color: #CAB8BF;
+}
 .gen-btn-wrap {
   margin-top: 24px;
   text-align: center;

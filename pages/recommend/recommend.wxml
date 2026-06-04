@@ -8,6 +8,8 @@
         class="mode-tab {{tabMode==='skin' ? 'mode-tab-active' : ''}}">根据肤色/条件</view>
       <view bindtap="onTabMode" data-mode="style"
         class="mode-tab {{tabMode==='style' ? 'mode-tab-active' : ''}}">根据妆容类型</view>
+      <view bindtap="onTabMode" data-mode="ai"
+        class="mode-tab {{tabMode==='ai' ? 'mode-tab-active' : ''}}">AI 智能咨询</view>
     </view>
 
     <block wx:if="{{tabMode==='skin'}}">
@@ -112,7 +114,15 @@
       </view>
     </block>
 
-    <view class="gen-btn-wrap">
+    <block wx:if="{{tabMode==='ai'}}">
+      <view class="ai-section">
+        <text class="section-title">描述你的需求</text>
+        <textarea class="ai-input" value="{{aiInput}}" bindinput="onAiInput" placeholder="例如：我25岁，混油皮，想要自然日常通勤妆，预算中等，喜欢温柔奶茶色系..." maxlength="500" />
+        <button bindtap="onAiSubmit" class="btn-primary btn-gen" loading="{{aiLoading}}" disabled="{{aiLoading || aiInput.trim()===''}}">🤖 AI 生成推荐</button>
+      </view>
+    </block>
+
+    <view wx:if="{{tabMode!=='ai'}}" class="gen-btn-wrap">
       <button bindtap="onGenerate" class="btn-primary btn-gen">✨ 生成推荐方案</button>
     </view>
   </block>
@@ -160,11 +170,19 @@
       </view>
     </block>
 
+    <block wx:if="{{results.aiAdvice}}">
+      <view class="rec-group tip-card">
+        <view class="rec-group-header">
+          <text class="rec-group-title">💡 AI 化妆建议</text>
+        </view>
+        <text class="tip-text">{{results.aiAdvice}}</text>
+      </view>
+    </block>
+
     <block wx:if="{{results.faceShapeTip}}">
       <view class="rec-group tip-card">
         <view class="rec-group-header">
-          <text>💡</text>
-          <text class="rec-group-title">脸型妆容建议</text>
+          <text class="rec-group-title">💡 脸型妆容建议</text>
         </view>
         <text class="tip-text">{{results.faceShapeTip}}</text>
       </view>

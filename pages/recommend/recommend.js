@@ -4,6 +4,9 @@ try{ taxonomy = require('../../data/taxonomy') }catch(e){ taxonomy = {} }
 var _fallbackProds = null
 try{ _fallbackProds = require('../../data/products') }catch(e){}
 
+var AI_API_URL = 'https://api.deepseek.com/chat/completions'
+var AI_API_KEY = 'sk-38e08031679547b1a03efb30e2af64c2'
+
 var FOUNDATION_MAP = {
   '浅_暖': ['p04','p09'], '浅_中性': ['p05','p06','p08'], '浅_冷': ['p08','p06'],
   '中_暖': ['p05','p07','p09'], '中_中性': ['p05','p06','p07'], '中_冷': ['p06','p08'],
@@ -81,6 +84,8 @@ Page({
     tipTop: 0,
     tipLeft: 0,
     tabMode: 'skin',
+    aiInput: '',
+    aiLoading: false,
     styleList: [
       { key:'asian', name:'亚裔妆', icon:'🌏' },
       { key:'korean', name:'韩妆', icon:'🇰🇷' },
@@ -266,5 +271,103 @@ Page({
   },
   onReset(){
     this.setData({ hasResult: false, results: null })
+  },
+  onAiInput(e){
+    this.setData({ aiInput: e.detail.value })
+  },
+  onAiSubmit(){
+    var input = this.data.aiInput.trim()
+    if(!input) return
+    var app = getApp()
+    var prods = (app && app.globalData && app.globalData.products) || _fallbackProds || []
+    if(prods.length === 0){
+      wx.showToast({ title: '数据加载中请稍后', icon: 'none' })
+      return
+    }
+    this.setData({ aiLoading: true })
+    var systemPrompt = this._buildSystemPrompt(prods)
+    var messages = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: input }
+    ]
+    var self = this
+    wx.request({
+      url: AI_API_URL,
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + AI_API_KEY
+      },
+      data: {
+        model: 'deepseek-chat',
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 2048
+      },
+      success(res){
+        if(res.statusCode !== 200 || !res.data || !res.data.choices || !res.data.choices[0]){
+          wx.showToast({ title: 'AI 请求失败', icon: 'none' })
+          self.setData({ aiLoading: false })
+          return
+        }
+        var content = res.data.choices[0].message.content
+        self._genByAI(content, prods)
+      },
+      fail(){
+        wx.showToast({ title: '网络错误，请重试', icon: 'none' })
+        self.setData({ aiLoading: false })
+      }
+    })
+  },
+  _buildSystemPrompt(prods){
+    var list = prods.map(function(p){
+      return { id: p.id, category: p.category, brand: p.brand, name: p.name, price: p.price, colorName: p.colorName }
+    })
+    var productJSON = JSON.stringify(list, null, 2)
+    return '你是一个专业的美妆顾问。以下是可推荐的商品库：\n' + productJSON + '\n\n' +
+      '请根据用户的描述，从上述商品库中选择最合适的商品，并以以下 JSON 格式回复（不要包含其他文字）：\n' +
+      '{\n  "advice": "详细的化妆建议（用中文）",\n  "product_ids": ["p04", "p09"]\n}\n\n' +
+      '要求：\n' +
+      '- advice 用中文，给出具体的化妆步骤和搭配建议\n' +
+      '- product_ids 只包含上述商品库中存在的 ID，每个品类推荐 1-2 款\n' +
+      '- 如果用户提到了预算、肤色、场合等信息，优先匹配\n' +
+      '- 如果没有合适的商品，product_ids 返回空数组'
+  },
+  _genByAI(content, prods){
+    try {
+      var result = JSON.parse(content)
+      if(!result.advice && !result.product_ids){
+        throw new Error('invalid format')
+      }
+    } catch(e){
+      wx.showToast({ title: 'AI 返回格式异常', icon: 'none' })
+      this.setData({ aiLoading: false })
+      return
+    }
+    var ids = result.product_ids || []
+    var items = []
+    for(var i = 0; i < ids.length; i++){
+      for(var j = 0; j < prods.length; j++){
+        if(prods[j].id === ids[i]){ items.push(prods[j]); break }
+      }
+    }
+    var catOrder = ['隔离/妆前乳','粉底液/气垫','粉饼/散粉','眼影','眼线','睫毛膏','腮红','修容/修颜','高光','口红/唇釉','遮瑕','眉笔/眉粉/染眉']
+    var catIcon = { '隔离/妆前乳':'🧴','粉底液/气垫':'🔵','粉饼/散粉':'⚪','眼影':'👁️','眼线':'✏️','睫毛膏':'🫦','腮红':'🌸','修容/修颜':'✨','高光':'💎','口红/唇釉':'💄','遮瑕':'🎨','眉笔/眉粉/染眉':'✍️' }
+    var groups = []
+    for(var c = 0; c < catOrder.length; c++){
+      var catItems = []
+      for(var i = 0; i < items.length; i++){
+        if(items[i].category === catOrder[c]){ catItems.push(items[i]) }
+      }
+      if(catItems.length > 0){
+        groups.push({ title: catOrder[c], icon: catIcon[catOrder[c]] || '📦', items: catItems })
+      }
+    }
+    this.setData({
+      results: { groups: groups, aiAdvice: result.advice || '' },
+      hasResult: true,
+      aiLoading: false,
+      aiInput: ''
+    })
   }
 })
