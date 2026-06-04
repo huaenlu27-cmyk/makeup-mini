@@ -9,29 +9,36 @@
   <view class="section-card">
     <view class="section-title-row">
       <text class="section-title">肤色档案</text>
-      <text class="section-hint">点击切换</text>
     </view>
     <view wx:if="{{profile}}" class="profile-fields">
-      <view bindtap="onEditFace" class="profile-row">
-        <text class="row-label">脸型</text>
-        <view class="row-value">{{profile.faceShapeName || profile.faceShape}}</view>
-        <text class="row-arrow">▸</text>
-      </view>
-      <view bindtap="onEditDepth" class="profile-row">
-        <text class="row-label">肤色深浅</text>
-        <view class="row-value">{{profile.depthName || profile.depth}}</view>
-        <text class="row-arrow">▸</text>
-      </view>
-      <view bindtap="onEditUndertone" class="profile-row">
-        <text class="row-label">肤色基调</text>
-        <view class="row-value">{{profile.undertoneName || profile.undertone}}</view>
-        <text class="row-arrow">▸</text>
-      </view>
-      <view bindtap="onEditOccasion" class="profile-row">
-        <text class="row-label">场景</text>
-        <view class="row-value">{{profile.occasionName || profile.occasion}}</view>
-        <text class="row-arrow">▸</text>
-      </view>
+      <picker mode="selector" range="{{faceShapeNames}}" value="{{faceShapeIndex}}" bindchange="onPickerFace">
+        <view class="profile-row">
+          <text class="row-label">脸型</text>
+          <view class="row-value">{{profile.faceShapeName || profile.faceShape}}</view>
+          <text class="row-arrow">▸</text>
+        </view>
+      </picker>
+      <picker mode="selector" range="{{depthNames}}" value="{{depthIndex}}" bindchange="onPickerDepth">
+        <view class="profile-row">
+          <text class="row-label">肤色深浅</text>
+          <view class="row-value">{{profile.depthName || profile.depth}}</view>
+          <text class="row-arrow">▸</text>
+        </view>
+      </picker>
+      <picker mode="selector" range="{{undertoneNames}}" value="{{undertoneIndex}}" bindchange="onPickerUndertone">
+        <view class="profile-row">
+          <text class="row-label">肤色基调</text>
+          <view class="row-value">{{profile.undertoneName || profile.undertone}}</view>
+          <text class="row-arrow">▸</text>
+        </view>
+      </picker>
+      <picker mode="selector" range="{{occasionNames}}" value="{{occasionIndex}}" bindchange="onPickerOccasion">
+        <view class="profile-row">
+          <text class="row-label">场景</text>
+          <view class="row-value">{{profile.occasionName || profile.occasion}}</view>
+          <text class="row-arrow">▸</text>
+        </view>
+      </picker>
     </view>
     <button bindtap="goRecommend" class="btn-primary btn-full">去生成推荐方案</button>
   </view>

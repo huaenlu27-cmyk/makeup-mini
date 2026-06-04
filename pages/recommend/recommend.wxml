@@ -18,7 +18,6 @@
             <block wx:for="{{faceShapes}}" wx:key="key">
               <view bindtap="onSelFace" data-key="{{item.key}}"
                 class="sel-card {{selFace===item.key ? 'sel-card-active' : ''}}">
-                <text class="sel-card-icon">{{item.key==='oval'?'🥚':item.key==='round'?'⭕':item.key==='square'?'⬜':item.key==='heart'?'💜':item.key==='diamond'?'💎':item.key==='long'?'▯':item.key==='triangle'?'🔽':'🔵'}}</text>
                 <text class="sel-card-label">{{item.name}}</text>
               </view>
             </block>
@@ -26,7 +25,6 @@
         </scroll-view>
         <view wx:if="{{currentFaceDetail}}" class="face-detail-card">
           <view class="face-detail-header">
-            <text class="face-detail-icon">{{selFace==='oval'?'🥚':selFace==='round'?'⭕':selFace==='square'?'⬜':selFace==='heart'?'💜':selFace==='diamond'?'💎':selFace==='long'?'▯':selFace==='triangle'?'🔽':'🔵'}}</text>
             <text class="face-detail-name">{{currentFaceDetail.name}}</text>
           </view>
           <text class="face-detail-desc">{{currentFaceDetail.description}}</text>
@@ -45,7 +43,7 @@
         <view class="section-title-wrap">
           <text class="section-title">肤色深浅</text>
           <view class="tip-wrapper">
-            <text id="depth-icon" bindtap="onShowTip" data-key="depth" class="tip-icon">❓</text>
+            <view id="depth-icon" bindtap="onShowTip" data-key="depth" class="tip-icon">❓</view>
           </view>
         </view>
         <view class="option-row">
@@ -63,7 +61,7 @@
         <view class="section-title-wrap">
           <text class="section-title">肤色基调</text>
           <view class="tip-wrapper">
-            <text id="undertone-icon" bindtap="onShowTip" data-key="undertone" class="tip-icon">❓</text>
+            <view id="undertone-icon" bindtap="onShowTip" data-key="undertone" class="tip-icon">❓</view>
           </view>
         </view>
         <view class="option-row">

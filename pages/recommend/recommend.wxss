@@ -53,13 +53,22 @@
   gap: 6px;
   margin-bottom: 10px;
 }
+.section-title-wrap .section-title {
+  margin-bottom: 0;
+}
 .tip-wrapper {
   position: relative;
   display: inline-flex;
 }
 .tip-icon {
-  font-size: 14px;
+  font-size: 10px;
   color: #CAB8BF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  line-height: 1;
 }
 .card-scroll {
   overflow: hidden;
@@ -85,9 +94,6 @@
   border-color: #E595A8;
   background: #FDF6F8;
 }
-.sel-card-icon {
-  font-size: 22px;
-}
 .sel-card-label {
   font-size: 11px;
   color: #3A2A30;
@@ -105,9 +111,6 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 10px;
-}
-.face-detail-icon {
-  font-size: 20px;
 }
 .face-detail-name {
   font-size: 14px;

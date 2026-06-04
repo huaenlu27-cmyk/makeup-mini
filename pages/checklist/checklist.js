@@ -42,16 +42,14 @@ Page({
     this.setData(obj)
   },
   onSelectCategory(e){
-    this.setData({ expandedKey: '' })
     this.selectCategory(e.currentTarget.dataset.cat)
   },
   onBudgetChange(e){
     var idx = e.detail.value
-    this.setData({ budgetIndex: idx, expandedKey: '' })
+    this.setData({ budgetIndex: idx })
     if(this.data.selectedCat) this.selectCategory(this.data.selectedCat)
   },
   selectCategory(cat){
-    this.setData({ selectedCat: cat, viewMode: 'swatch', filterBrand: '' })
     var budget = BUDGET_VALUES[this.data.budgetIndex]
     var products = this._getProducts()
     var pool = products.filter(function(p){
@@ -62,7 +60,30 @@ Page({
       pool = products.filter(function(p){ return p.name && p.name.indexOf(keyword) > -1 })
     }
     if(budget !== 'all') pool = pool.filter(function(p){ return p.budget === budget })
-    this._applyFilter(pool)
+    var map = {}
+    pool.forEach(function(s){
+      var key = s.hex || s.colorName || '通用'
+      if(!map[key]) map[key] = { name: s.colorName || '通用', hex: s.hex || '#f4f4f4', items: [] }
+      map[key].items.push(s)
+    })
+    var swatches = []
+    var mapKeys = Object.keys(map)
+    for(var i = 0; i < mapKeys.length; i++){
+      swatches.push(map[mapKeys[i]])
+    }
+    var brandCounts = {}
+    pool.forEach(function(s){ brandCounts[s.brand] = (brandCounts[s.brand] || 0) + 1 })
+    var brands = Object.keys(brandCounts).sort()
+    this.setData({
+      selectedCat: cat,
+      viewMode: 'swatch',
+      filterBrand: '',
+      expandedKey: '',
+      swatches: swatches,
+      brands: brands,
+      brandCounts: brandCounts,
+      filteredCount: pool.length
+    })
   },
   onViewBrand(e){
     var brand = e.currentTarget.dataset.brand
@@ -82,28 +103,6 @@ Page({
     var budget = BUDGET_VALUES[this.data.budgetIndex]
     if(budget !== 'all') pool = pool.filter(function(p){ return p.budget === budget })
     this.setData({ expandedBrand: brand, expandedBrandItems: pool })
-  },
-  _applyFilter(pool){
-    var map = {}
-    pool.forEach(function(s){
-      var key = s.hex || s.colorName || '通用'
-      if(!map[key]) map[key] = { name: s.colorName || '通用', hex: s.hex || '#f4f4f4', items: [] }
-      map[key].items.push(s)
-    })
-    var swatches = []
-    var mapKeys = Object.keys(map)
-    for(var i = 0; i < mapKeys.length; i++){
-      swatches.push(map[mapKeys[i]])
-    }
-    var brandCounts = {}
-    pool.forEach(function(s){ brandCounts[s.brand] = (brandCounts[s.brand] || 0) + 1 })
-    var brands = Object.keys(brandCounts).sort()
-    this.setData({
-      swatches: swatches,
-      brands: brands,
-      brandCounts: brandCounts,
-      filteredCount: pool.length
-    })
   },
   onTapSwatch(e){
     var key = e.currentTarget.dataset.key

@@ -94,6 +94,17 @@ Page({
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
     if(theme) this.setData({ theme: theme })
+    this._loadProfile()
+  },
+  onShow(){
+    var fromProfile = wx.getStorageSync('_fromProfile')
+    if(fromProfile){
+      this.setData({ tabMode: 'skin', hasResult: false, results: null })
+      wx.setStorageSync('_fromProfile', false)
+    }
+    this._loadProfile()
+  },
+  _loadProfile(){
     var saved = wx.getStorageSync('skinProfile')
     if(saved){
       var d = {}

@@ -13,16 +13,24 @@
 
   <block wx:if="{{items.length>0}}">
     <scroll-view scroll-y="true" style="flex:1;min-height:0">
-      <block wx:for="{{items}}" wx:for-item="item" wx:key="id">
-        <view class="cart-item card">
-          <view class="cart-item-left">
-            <view class="swatch cart-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+      <block wx:for="{{groups}}" wx:for-item="group" wx:key="title">
+        <view class="cart-group">
+          <view class="cart-group-header">
+            <text class="cart-group-title">{{group.title}}</text>
+            <text class="cart-group-count">{{group.items.length}} 件</text>
           </view>
-          <view class="cart-item-info">
-            <text class="name">{{item.name}}</text>
-            <text class="meta">{{item.brand}} · {{item.colorName}}</text>
-            <text class="cart-price">¥{{item.price}}</text>
-          </view>
+          <block wx:for="{{group.items}}" wx:for-item="item" wx:key="id">
+            <view class="cart-item">
+              <view class="cart-item-left">
+                <view class="swatch cart-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+              </view>
+              <view class="cart-item-info">
+                <text class="name">{{item.name}}</text>
+                <text class="meta">{{item.brand}} · {{item.colorName}}</text>
+                <text class="cart-price">¥{{item.price}}</text>
+              </view>
+            </view>
+          </block>
         </view>
       </block>
     </scroll-view>

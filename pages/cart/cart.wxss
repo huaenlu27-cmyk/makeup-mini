@@ -37,10 +37,37 @@
   font-size: 12px;
   color: #A89098;
 }
+.cart-group {
+  background: #FFFFFF;
+  border: 1px solid #EDE4E7;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.cart-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.cart-group-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3A2A30;
+}
+.cart-group-count {
+  font-size: 11px;
+  color: #A89098;
+  margin-left: auto;
+}
 .cart-item {
   display: flex;
   gap: 12px;
-  margin-bottom: 8px;
+  padding: 10px 0;
+  border-top: 1px solid #F5F0F2;
+}
+.cart-item:first-of-type {
+  border-top: none;
 }
 .cart-item-left {
   flex-shrink: 0;
