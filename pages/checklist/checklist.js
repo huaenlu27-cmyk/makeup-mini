@@ -6,6 +6,14 @@ var _fallbackProds = null
 try{ _fallbackCats = require('../../data/categories') }catch(e){}
 try{ _fallbackProds = require('../../data/products') }catch(e){}
 
+function _lum(hex){
+  if(!hex) return 0
+  var r = parseInt(hex.slice(1,3), 16) / 255
+  var g = parseInt(hex.slice(3,5), 16) / 255
+  var b = parseInt(hex.slice(5,7), 16) / 255
+  return 0.299 * r + 0.587 * g + 0.114 * b
+}
+
 Page({
   data: {
     categories: { groups: [] },
@@ -106,6 +114,9 @@ Page({
       sw.showFallback = sw.hexes.length === 0
       swatches.push(sw)
     }
+    swatches.sort(function(a, b){
+      return _lum(a.hexes[0]) - _lum(b.hexes[0])
+    })
     var brandCounts = {}
     pool.forEach(function(s){ brandCounts[s.brand] = (brandCounts[s.brand] || 0) + 1 })
     var brands = Object.keys(brandCounts).sort()
