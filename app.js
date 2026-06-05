@@ -28,8 +28,11 @@ var appInstance = App({
         header: { apikey: cfg.SUPABASE_KEY, Authorization: 'Bearer ' + cfg.SUPABASE_KEY },
         success: function(res){
           if(res.data && res.data.length){
-            self.globalData.products = res.data
-            wx.setStorageSync('cachedProducts', res.data)
+            var mapped = res.data.map(function(p){
+              return { id:p.id, category:p.category, brand:p.brand, name:p.name, colorName:p.color_name, hex:p.hex||'', price:p.price, budget:p.budget }
+            })
+            self.globalData.products = mapped
+            wx.setStorageSync('cachedProducts', mapped)
           } else {
             _loadLocal()
           }
@@ -43,10 +46,11 @@ var appInstance = App({
 
     function _loadLocal(){
       var cached = wx.getStorageSync('cachedProducts')
-      if(cached && cached.length){
+      if(cached && cached.length && cached[0].colorName){
         self.globalData.products = cached
         return
       }
+      wx.removeStorageSync('cachedProducts')
       try{
         self.globalData.products = require('./data/products')
       }catch(e){
