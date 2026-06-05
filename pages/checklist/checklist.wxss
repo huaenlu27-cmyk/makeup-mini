@@ -37,6 +37,8 @@
   flex: 1;
   min-height: 0;
   overflow: hidden;
+}
+.content-list > view:last-child {
   padding-bottom: 80px;
 }
 .group-label {
@@ -177,7 +179,7 @@
 .swatch-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 .swatch-item {
   display: flex;
@@ -188,7 +190,6 @@
   padding: 12px;
   border: 1px solid var(--border);
   transition: border-radius 0.2s;
-  width: 100%;
 }
 .swatch-item-expanded {
   border-radius: 14px 14px 0 0;
@@ -197,7 +198,7 @@
 .swatch-hexes {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   flex-shrink: 0;
 }
 .swatch-dot {
@@ -257,8 +258,8 @@
   border-top: none;
 }
 .product-swatch {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 1px solid var(--border);
   flex-shrink: 0;

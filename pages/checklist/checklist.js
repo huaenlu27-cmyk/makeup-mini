@@ -30,7 +30,8 @@ Page({
     filterBrand: '',
     expandedBrand: '',
     expandedBrandItems: [],
-    searchKeyword: ''
+    searchKeyword: '',
+    contentListHeight: 0
   },
   onLoad(){
     var app = getApp()
@@ -41,11 +42,15 @@ Page({
     var firstCat = firstGroup && firstGroup.items && firstGroup.items[0]
     if(firstCat) this.selectCategory(firstCat)
   },
+  onReady(){
+    this._calcContentHeight()
+  },
   onShow(){
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
     if(theme) this.setData({ theme: theme })
     this._updateBadge()
+    this._calcContentHeight()
   },
   _getProducts(){
     var app = getApp()
@@ -222,6 +227,17 @@ Page({
     var cart = wx.getStorageSync('cart') || []
     var count = cart.length
     wx.setTabBarBadge({ index: 2, text: count > 99 ? '99+' : String(count) })
+  },
+  _calcContentHeight(){
+    var self = this
+    var sysInfo = wx.getSystemInfoSync()
+    var windowHeight = sysInfo.windowHeight
+    wx.createSelectorQuery().in(this).select('.content-top').boundingClientRect(function(rect){
+      if(!rect) return
+      var topHeight = rect.height
+      var avaHeight = windowHeight - topHeight - 32
+      self.setData({ contentListHeight: Math.max(avaHeight, 200) })
+    }).exec()
   },
   setViewMode(e){
     this.setData({ viewMode: e.currentTarget.dataset.mode, expandedKey: '' })

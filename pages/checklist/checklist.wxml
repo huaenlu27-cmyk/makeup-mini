@@ -50,7 +50,7 @@
         </view>
       </view>
 
-      <scroll-view class="content-list" scroll-y="true">
+      <scroll-view class="content-list" scroll-y="true" style="height:{{contentListHeight}}px">
         <block wx:if="{{viewMode==='swatch'}}">
           <view class="swatch-list">
             <block wx:for="{{swatches}}" wx:for-item="s" wx:for-index="i" wx:key="i">
