@@ -16,7 +16,7 @@ function findName(list, key){
   return key
 }
 
-function enrichProfile(p, shapes, depths, occasions){
+function enrichProfile(p, shapes, depths, occasions, skinTypes){
   for(var i = 0; i < shapes.length; i++){
     if(shapes[i].key === p.faceShape){ p.faceShapeName = shapes[i].name; break }
   }
@@ -26,6 +26,9 @@ function enrichProfile(p, shapes, depths, occasions){
   p.undertoneName = UNDERTONE_MAP[p.undertone] || p.undertone
   for(var i = 0; i < occasions.length; i++){
     if(occasions[i].key === p.occasion){ p.occasionName = occasions[i].name; break }
+  }
+  for(var i = 0; i < skinTypes.length; i++){
+    if(skinTypes[i].key === p.skinType){ p.skinTypeName = skinTypes[i].name; break }
   }
   return p
 }
@@ -37,6 +40,7 @@ Page({
     userAvatar: '',
     faceShapes: taxonomy.face_shapes || [],
     depthList: taxonomy.skin_depths || [],
+    skinTypes: taxonomy.skin_types || [],
     occasionList: [
       { key:'daily', name:'日常' },
       { key:'commute', name:'通勤' },
@@ -87,12 +91,13 @@ Page({
     this.setData({ userName: up.name || '', userAvatar: up.avatar || '' })
 
     var profile = wx.getStorageSync('skinProfile') || {
-      faceShape: 'oval', depth: 'medium', undertone: 'neutral', occasion: 'daily'
+      faceShape: 'oval', depth: 'medium', undertone: 'neutral', skinType: 'normal', occasion: 'daily'
     }
     var shapes = this.data.faceShapes
     var depths = this.data.depthList
+    var skinTypes = this.data.skinTypes
     var occasionList = this.data.occasionList
-    profile = enrichProfile(profile, shapes, depths, occasionList)
+    profile = enrichProfile(profile, shapes, depths, occasionList, skinTypes)
 
     var shapeNames = shapes.map(function(s){ return s.name })
     var shapeIdx = 0
@@ -110,6 +115,10 @@ Page({
     var occasionNames = occasionList.map(function(s){ return s.name })
     var occasionIdx = 0
     for(var i = 0; i < occasionList.length; i++){ if(occasionList[i].key === profile.occasion){ occasionIdx = i; break } }
+
+    var skinTypeNames = skinTypes.map(function(s){ return s.name })
+    var skinTypeIdx = 0
+    for(var i = 0; i < skinTypes.length; i++){ if(skinTypes[i].key === profile.skinType){ skinTypeIdx = i; break } }
 
     var pref = wx.getStorageSync('preferences') || {}
     var ids = wx.getStorageSync('recentViews') || []
@@ -132,7 +141,9 @@ Page({
       undertoneNames: undertoneNames,
       undertoneIndex: undertoneIdx,
       occasionNames: occasionNames,
-      occasionIndex: occasionIdx
+      occasionIndex: occasionIdx,
+      skinTypeNames: skinTypeNames,
+      skinTypeIndex: skinTypeIdx
     })
   },
   onPickerFace(e){
@@ -170,6 +181,15 @@ Page({
     profile.occasion = list[idx].key
     profile.occasionName = list[idx].name
     this.setData({ profile: profile, occasionIndex: idx })
+    wx.setStorageSync('skinProfile', profile)
+  },
+  onPickerSkinType(e){
+    var idx = e.detail.value
+    var profile = this.data.profile
+    var list = this.data.skinTypes
+    profile.skinType = list[idx].key
+    profile.skinTypeName = list[idx].name
+    this.setData({ profile: profile, skinTypeIndex: idx })
     wx.setStorageSync('skinProfile', profile)
   },
   onBudgetChange(e){

@@ -40,6 +40,13 @@
           <text class="row-arrow">▸</text>
         </view>
       </picker>
+      <picker mode="selector" range="{{skinTypeNames}}" value="{{skinTypeIndex}}" bindchange="onPickerSkinType">
+        <view class="profile-row">
+          <text class="row-label">肤质</text>
+          <view class="row-value">{{profile.skinTypeName || profile.skinType}}</view>
+          <text class="row-arrow">▸</text>
+        </view>
+      </picker>
     </view>
     <button bindtap="goRecommend" class="btn-primary btn-full">去生成推荐方案</button>
   </view>

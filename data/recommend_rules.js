@@ -1,4 +1,36 @@
 module.exports = {
+  foundation_by_skin: {
+    dry: ['p04','p58','p61','p64','p139','p155','p157','p158'],
+    oily: ['p06','p07','p08','p57','p59','p63','p140','p154','p156','p159'],
+    normal: ['p05','p06','p09','p60','p62','p63','p64','p65','p155','p156'],
+    combination: ['p05','p06','p07','p08','p60','p65','p140','p154','p155','p159'],
+    sensitive: ['p04','p157','p139','p155'],
+    acne_prone: ['p08','p62','p07','p57','p156']
+  },
+  concealer_by_skin: {
+    dry: ['p10','p69','p162'],
+    oily: ['p11','p66','p67','p161'],
+    normal: ['p10','p66','p68','p160'],
+    combination: ['p69','p160','p162'],
+    sensitive: ['p160','p69'],
+    acne_prone: ['p67','p161','p11']
+  },
+  blush_by_skin: {
+    dry: ['p15','p80','p169'],
+    oily: ['p16','p18','p81','p83'],
+    normal: ['p17','p84','p144','p167'],
+    combination: ['p82','p167','p168'],
+    sensitive: ['p15','p85'],
+    acne_prone: ['p16','p18','p81']
+  },
+  sunscreen_by_skin: {
+    dry: ['p46','p130','p132'],
+    oily: ['p128','p131','p199'],
+    normal: ['p46','p129','p198','p131'],
+    combination: ['p46','p130','p132'],
+    sensitive: ['p198','p130','p128'],
+    acne_prone: ['p199','p131','p128']
+  },
   foundation_by_depth_undertone: {
     '浅_暖': ['p04','p05','p57','p63'],
     '浅_中性': ['p05','p06','p58','p64'],

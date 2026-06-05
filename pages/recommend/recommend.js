@@ -47,6 +47,7 @@ Page({
   data: {
     faceShapes: taxonomy.face_shapes || [],
     depthList: taxonomy.skin_depths || [],
+    skinTypes: taxonomy.skin_types || [],
     occasionList: [
       { key:'daily', name:'日常', icon:'🌿' },
       { key:'commute', name:'通勤', icon:'💼' },
@@ -56,6 +57,7 @@ Page({
     selFace: 'oval',
     selDepth: 'medium',
     selUndertone: 'neutral',
+    selSkinType: 'normal',
     selOccasion: 'daily',
     selStyle: 'korean',
     currentFaceDetail: null,
@@ -100,6 +102,8 @@ Page({
       wx.setStorageSync('_fromProfile', false)
       wx.removeStorageSync('_lastResults')
     } else {
+      var savedMode = wx.getStorageSync('_savedTabMode') || 'skin'
+      this.setData({ tabMode: savedMode })
       var last = wx.getStorageSync('_lastResults')
       if(last && !this.data.hasResult){
         this.setData({ results: last.results, hasResult: true })
@@ -115,6 +119,7 @@ Page({
       if(saved.faceShape) d.selFace = saved.faceShape
       if(saved.depth) d.selDepth = saved.depth
       if(saved.undertone) d.selUndertone = saved.undertone
+      if(saved.skinType) d.selSkinType = saved.skinType
       if(saved.occasion) d.selOccasion = saved.occasion
       this.setData(d)
     }
@@ -163,6 +168,7 @@ Page({
   },
   onSelDepth(e){ this.setData({ selDepth: e.currentTarget.dataset.key }) },
   onSelUndertone(e){ this.setData({ selUndertone: e.currentTarget.dataset.key }) },
+  onSelSkinType(e){ this.setData({ selSkinType: e.currentTarget.dataset.key }) },
   onSelOccasion(e){ this.setData({ selOccasion: e.currentTarget.dataset.key }) },
   onGenerate(){
     this.setData({ genLoading: true })
@@ -182,34 +188,71 @@ Page({
     var dk = getDepthKey(this.data.selDepth)
     var uk = getUTKey(this.data.selUndertone)
     var ok = getOccKey(this.data.selOccasion)
+    var sk = this.data.selSkinType || 'normal'
     var groups = []
 
     var fMap = (rules && rules.foundation_by_depth_undertone) || {}
+    var fSkinMap = (rules && rules.foundation_by_skin) || {}
+    var pMap = (rules && rules.powder_by_skin) || {}
+    var primMap = (rules && rules.primer_by_skin) || {}
+    var setMap = (rules && rules.setting_by_skin) || {}
+    var concMap = (rules && rules.concealer_by_skin) || {}
+    var sunMap = (rules && rules.sunscreen_by_skin) || {}
+    var bSkinMap = (rules && rules.blush_by_skin) || {}
     var lMap = (rules && rules.lip_by_undertone_occasion) || {}
     var bMap = (rules && rules.blush_by_undertone) || {}
     var eMap = (rules && rules.eyeshadow_by_occasion) || {}
     var cMap = (rules && rules.contour_by_face_shape) || {}
     var hMap = (rules && rules.highlight_by_undertone) || {}
-    var pMap = (rules && rules.powder_by_skin) || {}
 
-    var depthToSkin = { very_fair:'normal', fair:'normal', light:'normal', medium:'combination', tan:'oily', deep:'oily' }
-    var baseItems = findByIds(prods, (fMap[dk+'_'+uk]||[])).concat(
-      findByIds(prods, (pMap[depthToSkin[this.data.selDepth]||'normal']||[])))
+    var fDepthIds = fMap[dk+'_'+uk] || []
+    var fSkinIds = fSkinMap[sk] || []
+    var combinedIds = fDepthIds.slice()
+    fSkinIds.forEach(function(id){
+      if(combinedIds.indexOf(id) === -1) combinedIds.push(id)
+    })
+    var baseItems = findByIds(prods, combinedIds).concat(
+      findByIds(prods, pMap[sk] || []))
     if(baseItems.length > 0){
       groups.push({ title:'底妆推荐', icon:'🔵', items:baseItems })
     }
+
+    var prepItems = findByIds(prods, (primMap[sk]||[])).concat(
+      findByIds(prods, (setMap[sk]||[])))
+    if(prepItems.length > 0){
+      groups.push({ title:'妆前/定妆', icon:'🧴', items:prepItems })
+    }
+
+    var concItems = findByIds(prods, (concMap[sk]||[]))
+    if(concItems.length > 0){
+      groups.push({ title:'遮瑕推荐', icon:'🎨', items:concItems })
+    }
+
+    var sunItems = findByIds(prods, (sunMap[sk]||[]))
+    if(sunItems.length > 0){
+      groups.push({ title:'防晒推荐', icon:'☀️', items:sunItems })
+    }
+
     var lipItems = findByIds(prods, lMap[uk+'_'+ok]||[])
     if(lipItems.length > 0){
       groups.push({ title:'唇部推荐', icon:'🔴', items:lipItems })
     }
-    var blushItems = findByIds(prods, bMap[uk]||[])
+
+    var blushIds = (bMap[uk]||[]).slice()
+    var bSkinIds = bSkinMap[sk] || []
+    bSkinIds.forEach(function(id){
+      if(blushIds.indexOf(id) === -1) blushIds.push(id)
+    })
+    var blushItems = findByIds(prods, blushIds)
     if(blushItems.length > 0){
       groups.push({ title:'腮红推荐', icon:'🌸', items:blushItems })
     }
+
     var eyeItems = findByIds(prods, eMap[ok]||[])
     if(eyeItems.length > 0){
       groups.push({ title:'眼妆推荐', icon:'👁️', items:eyeItems })
     }
+
     var ctItems = findByIds(prods, (cMap[this.data.selFace]||[])).concat(
       findByIds(prods, (hMap[uk]||[])))
     if(ctItems.length > 0){
@@ -537,8 +580,11 @@ Page({
     var list = prods.map(function(p){
       return { id: p.id, category: p.category, brand: p.brand, name: p.name, price: p.price, colorName: p.colorName }
     })
+    var skinTypeMap = { normal:'中性皮', dry:'干皮', oily:'油皮', combination:'混油皮', sensitive:'干敏皮', acne_prone:'痘痘肌' }
+    var skinTypeName = skinTypeMap[this.data.selSkinType] || this.data.selSkinType
     var productJSON = JSON.stringify(list, null, 2)
     return '你是一个专业的美妆顾问。以下是可推荐的商品库：\n' + productJSON + '\n\n' +
+      '用户当前已选择肤质为: ' + skinTypeName + '\n\n' +
       '请根据用户的描述，从上述商品库中选择最合适的商品，并以以下 JSON 格式回复（不要包含其他文字）：\n' +
       '{\n  "title": "通勤自然妆推荐",\n  "advice": "详细的化妆建议（用中文）",\n  "product_ids": ["p04", "p09"]\n}\n\n' +
       '要求：\n' +
@@ -546,7 +592,8 @@ Page({
       '- advice 用中文，给出具体的化妆步骤和搭配建议\n' +
       '- product_ids 只包含上述商品库中存在的 ID，每个品类推荐 1-2 款\n' +
       '- 重要：advice 中提到的每一个商品都必须出现在 product_ids 中，不可遗漏\n' +
-      '- 如果用户提到了预算、肤色、场合等信息，优先匹配\n' +
+      '- 如果用户提到了预算、肤色、肤质、场合等信息，优先匹配\n' +
+      '- 用户肤质为 ' + skinTypeName + '，推荐时优先考虑适合该肤质的产品\n' +
       '- 如果没有合适的商品，product_ids 返回空数组'
   },
   _genByAI(content, prods){

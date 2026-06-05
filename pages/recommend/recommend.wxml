@@ -96,6 +96,20 @@
           </block>
         </view>
       </view>
+
+      <view class="section">
+        <view class="section-title-wrap">
+          <text class="section-title">肤质</text>
+        </view>
+        <view class="option-row">
+          <block wx:for="{{skinTypes}}" wx:key="key">
+            <view bindtap="onSelSkinType" data-key="{{item.key}}"
+              class="chip {{selSkinType===item.key ? 'chip-active' : ''}}">
+              <text>{{item.name}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
     </block>
 
     <block wx:if="{{tabMode==='style'}}">
