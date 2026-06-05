@@ -1,16 +1,3 @@
-let products = []
-try{
-  products = require('../../data/products')
-}catch(e){
-  try{ products = require('../../data/products.json') }catch(e2){ products = [] }
-}
-
-function _themeStyles(t){
-  if(!t || !t.colors) return {}
-  var c = t.colors
-  return { bg:c.primaryBg, surface:c.surface, text:c.text, muted:c.muted, accent:c.accent, accentL:c.accentLight, border:c.border, chipBg:c.chipBg }
-}
-
 Page({
   data: {
     products: [],
@@ -20,12 +7,15 @@ Page({
     selectedColor: null
   },
   onLoad() {
-    const prods = products || []
-    const cats = Array.from(new Set(prods.map(p=>p.category))).sort()
-    const app = getApp()
-    let theme = (app && app.globalData && app.globalData.theme) ? app.globalData.theme : null
+    var app = getApp()
+    var prods = (app && app.globalData && app.globalData.products) || []
+    if(!prods.length){
+      try{ prods = require('../../data/products') }catch(e){ prods = [] }
+    }
+    var cats = Array.from(new Set(prods.map(function(p){ return p.category }))).sort()
+    var theme = (app && app.globalData && app.globalData.theme) ? app.globalData.theme : null
     if(!theme){ try{ theme = require('../../theme') }catch(e){ theme = null } }
-    this.setData({ products: prods, categories: cats, category: cats[0]||'', theme, s: _themeStyles(theme) }, ()=>{
+    this.setData({ products: prods, categories: cats, category: cats[0]||'', theme: theme }, function(){
       this.buildColorGroups()
     })
   },

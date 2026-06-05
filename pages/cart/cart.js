@@ -1,18 +1,12 @@
 var cfg = require('../../data/config')
 var CAT_ORDER = cfg.CAT_ORDER
 
-function _themeStyles(t){
-  if(!t || !t.colors) return {}
-  var c = t.colors
-  return { bg:c.primaryBg, surface:c.surface, text:c.text, muted:c.muted, accent:c.accent, accentL:c.accentLight, border:c.border, chipBg:c.chipBg }
-}
-
 Page({
   data: { items: [], groups: [], totalPrice: 0 },
   onShow(){
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
-    if(theme) this.setData({ theme: theme, s: _themeStyles(theme) })
+    if(theme) this.setData({ theme: theme })
     var items = wx.getStorageSync('cart') || []
     var groups = this._groupItems(items)
     var total = 0

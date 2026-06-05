@@ -43,12 +43,6 @@ function findByIds(prods, ids){
   return r
 }
 
-function _themeStyles(t){
-  if(!t || !t.colors) return {}
-  var c = t.colors
-  return { bg:c.primaryBg, surface:c.surface, text:c.text, muted:c.muted, accent:c.accent, accentL:c.accentLight, border:c.border, chipBg:c.chipBg }
-}
-
 Page({
   data: {
     faceShapes: taxonomy.face_shapes || [],
@@ -91,7 +85,7 @@ Page({
     this.setData({ tabMode: savedMode })
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
-    if(theme) this.setData({ theme: theme, s: _themeStyles(theme) })
+    if(theme) this.setData({ theme: theme })
     this._loadProfile()
     this._loadAIHistory()
   },
@@ -99,7 +93,7 @@ Page({
     this._updateBadge()
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
-    if(theme) this.setData({ theme: theme, s: _themeStyles(theme) })
+    if(theme) this.setData({ theme: theme })
     var fromProfile = wx.getStorageSync('_fromProfile')
     if(fromProfile){
       this.setData({ tabMode: 'skin', hasResult: false, results: null })

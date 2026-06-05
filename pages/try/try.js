@@ -1,20 +1,19 @@
 let taxonomy = {}
 let colorTable = {}
-let products = []
 try{
   taxonomy = require('../../data/taxonomy')
 }catch(e){ try{ taxonomy = require('../../data/taxonomy.json') }catch(e2){ taxonomy = {} } }
 try{
   colorTable = require('../../data/color_table')
 }catch(e){ try{ colorTable = require('../../data/color_table.json') }catch(e2){ colorTable = {} } }
-try{
-  products = require('../../data/products')
-}catch(e){ try{ products = require('../../data/products.json') }catch(e2){ products = [] } }
 
-function _themeStyles(t){
-  if(!t || !t.colors) return {}
-  var c = t.colors
-  return { bg:c.primaryBg, surface:c.surface, text:c.text, muted:c.muted, accent:c.accent, accentL:c.accentLight, border:c.border, chipBg:c.chipBg }
+function _getProds(){
+  var app = getApp()
+  var p = (app && app.globalData && app.globalData.products) || []
+  if(!p.length){
+    try{ p = require('../../data/products') }catch(e){ try{ p = require('../../data/products.json') }catch(e2){} }
+  }
+  return p
 }
 
 function _matchTone(hex, tone){
@@ -39,7 +38,7 @@ Page({
     const app = getApp()
     let theme = (app && app.globalData && app.globalData.theme) ? app.globalData.theme : null
     if(!theme){ try{ theme = require('../../theme') }catch(e){ theme = null } }
-    if(theme) this.setData({ theme, s: _themeStyles(theme) })
+    if(theme) this.setData({ theme })
   },
   setTone(e){
     this.setData({ tone: e.currentTarget.dataset.tone })
@@ -63,9 +62,9 @@ Page({
       const foundation = (colorTable.foundation || {})
       const depthEntry = foundation[toneKey] || {}
       const colors = depthEntry[undertoneCN] || []
-      const enriched = colors.map(c=>{
+      const enriched = colors.map(function(c){
         const hex = (c.hex||'').toLowerCase()
-        const matches = products.filter(s=> (s.hex && s.hex.toLowerCase()===hex) || (s.colorName && s.colorName===c.name))
+        const matches = _getProds().filter(function(s){ return (s.hex && s.hex.toLowerCase()===hex) || (s.colorName && s.colorName===c.name) })
         return { color: c, skus: matches }
       })
       groups.push({ sourceName: toneKey + '肤·粉底', colors: enriched })
@@ -82,7 +81,7 @@ Page({
       }
       const enriched = colors.map(c=>{
         const hex = (c.hex||'').toLowerCase()
-        var matches = products.filter(s=> (s.hex && s.hex.toLowerCase()===hex) || (s.colorName && s.colorName===c.name))
+        var matches = _getProds().filter(function(s){ return (s.hex && s.hex.toLowerCase()===hex) || (s.colorName && s.colorName===c.name) })
         matches = matches.filter(function(s){ return _matchTone(s.hex, toneKey) })
         return { color: c, skus: matches }
       })
