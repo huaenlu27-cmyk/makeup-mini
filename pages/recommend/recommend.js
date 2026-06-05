@@ -8,6 +8,7 @@ var cfg = null
 try{ cfg = require('../../data/config') }catch(e){}
 var rules = null
 try{ rules = require('../../data/recommend_rules') }catch(e){}
+try{ var hotStats = require('../../utils/hotStats') }catch(e){} 
 
 var AI_API_URL = 'https://api.deepseek.com/chat/completions'
 var AI_API_KEY = 'sk-38e08031679547b1a03efb30e2af64c2'
@@ -85,6 +86,10 @@ Page({
   onLoad(){
     var savedMode = wx.getStorageSync('_savedTabMode') || 'skin'
     this.setData({ tabMode: savedMode })
+    var last = wx.getStorageSync('_lastResults')
+    if(last){
+      this.setData({ results: last.results, hasResult: true, tabMode: last.tabMode || savedMode })
+    }
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
     if(theme) this.setData({ theme: theme })
@@ -103,8 +108,9 @@ Page({
       wx.removeStorageSync('_lastResults')
     } else {
       var savedMode = wx.getStorageSync('_savedTabMode') || 'skin'
-      this.setData({ tabMode: savedMode })
       var last = wx.getStorageSync('_lastResults')
+      var restoreMode = (last && last.tabMode) || savedMode
+      this.setData({ tabMode: restoreMode })
       if(last && !this.data.hasResult){
         this.setData({ results: last.results, hasResult: true })
       }
@@ -265,12 +271,14 @@ Page({
       if(shapes[i].key === this.data.selFace){ tip = shapes[i].description; break }
     }
 
+    var newResults = { groups: groups, faceShapeTip: tip }
     this.setData({
-      results: { groups: groups, faceShapeTip: tip },
+      results: newResults,
       hasResult: true,
       genKey: this.data.genKey + 1,
       genLoading: false
     })
+    wx.setStorageSync('_lastResults', { results: newResults, tabMode: this.data.tabMode })
   },
   _genByStyle(prods){
     var styleKey = this.data.selStyle
@@ -332,6 +340,7 @@ Page({
     cart.push(sku)
     wx.setStorageSync('cart', cart)
     this._updateBadge()
+    if(hotStats) hotStats.addHotStat(id)
     wx.showToast({ title:'已加入清单', icon:'success' })
   },
   _updateBadge(){
@@ -506,6 +515,7 @@ Page({
       }
       if(!exists){
         cart.push(allItems[i])
+        if(hotStats) hotStats.addHotStat(allItems[i].id)
         addedCount++
       }
     }

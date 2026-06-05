@@ -1,3 +1,5 @@
+try{ var hotStats = require('../../utils/hotStats') }catch(e){}
+
 let taxonomy = {}
 let colorTable = {}
 try{
@@ -107,6 +109,7 @@ Page({
     cart.push(sku)
     wx.setStorageSync('cart', cart)
     this._updateBadge()
+    if(hotStats) hotStats.addHotStat(sku.id)
     wx.showToast({ title: '已加入清单' })
   },
   _updateBadge(){

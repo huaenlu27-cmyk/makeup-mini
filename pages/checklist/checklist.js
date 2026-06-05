@@ -5,6 +5,7 @@ var _fallbackCats = null
 var _fallbackProds = null
 try{ _fallbackCats = require('../../data/categories') }catch(e){}
 try{ _fallbackProds = require('../../data/products') }catch(e){}
+try{ var hotStats = require('../../utils/hotStats') }catch(e){} 
 
 function _lum(hex){
   if(!hex) return 0
@@ -221,6 +222,7 @@ Page({
     cart.push(sku)
     wx.setStorageSync('cart', cart)
     this._updateBadge()
+    if(hotStats) hotStats.addHotStat(id)
     wx.showToast({ title: '已加入清单', icon: 'success' })
   },
   _updateBadge(){

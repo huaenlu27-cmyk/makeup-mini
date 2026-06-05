@@ -1,3 +1,5 @@
+try{ var hotStats = require('../../utils/hotStats') }catch(e){}
+
 Page({
   data: {
     products: [],
@@ -55,6 +57,7 @@ Page({
     cart.push(sku)
     wx.setStorageSync('cart', cart)
     this._updateBadge()
+    if(hotStats) hotStats.addHotStat(id)
     wx.showToast({ title: '已加入清单', icon: 'success' })
   },
   _updateBadge(){

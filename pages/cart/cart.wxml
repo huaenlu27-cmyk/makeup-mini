@@ -7,7 +7,29 @@
       <text class="empty-icon">📋</text>
       <text class="empty-text">清单还是空的</text>
       <text class="empty-hint">在「化妆清单」中添加感兴趣的商品</text>
-      <button bindtap="goChecklist" class="btn-primary" style="margin-top:16px;padding:10px 24px;font-size:13px">去化妆清单选购</button>
+    </view>
+    <block wx:if="{{hotItems.length>0}}">
+      <view class="hot-section">
+        <view class="hot-header">
+          <text class="hot-title">🔥 大家都在加</text>
+        </view>
+        <scroll-view scroll-x="true" class="hot-scroll">
+          <view class="hot-row">
+            <block wx:for="{{hotItems}}" wx:for-item="item" wx:key="id">
+              <view class="hot-card">
+                <view class="hot-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+                <text class="hot-brand">{{item.brand}}</text>
+                <text class="hot-name">{{item.name}}</text>
+                <text class="hot-price">¥{{item.price}}</text>
+                <button bindtap="onAddHotItem" data-id="{{item.id}}" class="hot-add-btn">+</button>
+              </view>
+            </block>
+          </view>
+        </scroll-view>
+      </view>
+    </block>
+    <view class="empty-footer">
+      <button bindtap="goChecklist" class="btn-primary" style="padding:10px 24px;font-size:13px">去化妆清单选购</button>
     </view>
   </block>
 

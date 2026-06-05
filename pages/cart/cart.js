@@ -1,8 +1,11 @@
 var cfg = require('../../data/config')
 var CAT_ORDER = cfg.CAT_ORDER
+try{ var hotStats = require('../../utils/hotStats') }catch(e){}
+var _fallbackProds = null
+try{ _fallbackProds = require('../../data/products') }catch(e){} 
 
 Page({
-  data: { items: [], groups: [], totalPrice: 0 },
+  data: { items: [], groups: [], totalPrice: 0, hotItems: [] },
   onShow(){
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
@@ -13,7 +16,13 @@ Page({
     for(var i = 0; i < items.length; i++){
       total += Number(items[i].price) || 0
     }
-    this.setData({ items: items, groups: groups, totalPrice: total.toFixed(2) })
+    var hotItems = []
+    if(items.length === 0 && hotStats){
+      var app = getApp()
+      var prods = (app && app.globalData && app.globalData.products) || _fallbackProds || []
+      hotItems = hotStats.getHotProducts(prods, 8)
+    }
+    this.setData({ items: items, groups: groups, totalPrice: total.toFixed(2), hotItems: hotItems })
     this._updateBadge()
   },
   _groupItems(items){
@@ -111,12 +120,41 @@ Page({
       success(res){
         if(res.confirm){
           wx.removeStorageSync('cart')
-          self.setData({ items: [], groups: [], totalPrice: '0.00' })
+          var hotItems = []
+          if(hotStats){
+            var app = getApp()
+            var prods = (app && app.globalData && app.globalData.products) || _fallbackProds || []
+            hotItems = hotStats.getHotProducts(prods, 8)
+          }
+          self.setData({ items: [], groups: [], totalPrice: '0.00', hotItems: hotItems })
           self._updateBadge()
           wx.showToast({ title: '已清空', icon: 'success' })
         }
       }
     })
+  },
+  onAddHotItem(e){
+    var id = e.currentTarget.dataset.id
+    var app = getApp()
+    var prods = (app && app.globalData && app.globalData.products) || _fallbackProds || []
+    var sku = null
+    for(var i = 0; i < prods.length; i++){
+      if(prods[i].id === id){ sku = prods[i]; break }
+    }
+    if(!sku){ wx.showToast({ title: '未找到商品', icon: 'none' }); return }
+    var cart = wx.getStorageSync('cart') || []
+    for(var c = 0; c < cart.length; c++){
+      if(cart[c].id === id){
+        wx.showToast({ title: '已在清单中', icon: 'none' })
+        return
+      }
+    }
+    cart.push(sku)
+    wx.setStorageSync('cart', cart)
+    if(hotStats) hotStats.addHotStat(id)
+    this._updateBadge()
+    wx.showToast({ title: '已加入清单', icon: 'success' })
+    this.onShow()
   },
   goChecklist(){
     wx.switchTab({ url: '/pages/checklist/checklist' })

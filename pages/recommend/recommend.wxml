@@ -86,18 +86,6 @@
       </view>
 
       <view class="section">
-        <text class="section-title">场景</text>
-        <view class="option-row">
-          <block wx:for="{{occasionList}}" wx:key="key">
-            <view bindtap="onSelOccasion" data-key="{{item.key}}"
-              class="chip {{selOccasion===item.key ? 'chip-active' : ''}}">
-              <text>{{item.icon}} {{item.name}}</text>
-            </view>
-          </block>
-        </view>
-      </view>
-
-      <view class="section">
         <view class="section-title-wrap">
           <text class="section-title">肤质</text>
         </view>
@@ -106,6 +94,18 @@
             <view bindtap="onSelSkinType" data-key="{{item.key}}"
               class="chip {{selSkinType===item.key ? 'chip-active' : ''}}">
               <text>{{item.name}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">场景</text>
+        <view class="option-row">
+          <block wx:for="{{occasionList}}" wx:key="key">
+            <view bindtap="onSelOccasion" data-key="{{item.key}}"
+              class="chip {{selOccasion===item.key ? 'chip-active' : ''}}">
+              <text>{{item.icon}} {{item.name}}</text>
             </view>
           </block>
         </view>
