@@ -203,5 +203,8 @@ Page({
   },
   goChecklist(){
     wx.switchTab({ url: '/pages/checklist/checklist' })
+  },
+  goMyFavorites(){
+    wx.switchTab({ url: '/pages/community/community' })
   }
 })

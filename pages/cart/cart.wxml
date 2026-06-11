@@ -67,6 +67,7 @@
     <text class="total-label">合计</text>
     <text class="total-price">¥{{totalPrice}}</text>
   </view>
+  <button bindtap="goShareCommunity" class="btn-outline btn-share" style="background:{{theme.colors.surface}};color:var(--primary);border-color:var(--primary)">分享到社群</button>
   <button bindtap="clearCart" class="btn-outline btn-clear" style="background:{{theme.colors.surface}};color:{{theme.colors.muted}};border-color:{{theme.colors.border}}">清空清单</button>
   <button bindtap="goChecklist" class="btn-primary btn-continue" style="background:{{theme.colors.accent}}">继续选购</button>
 </view>

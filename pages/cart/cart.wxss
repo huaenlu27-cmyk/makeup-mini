@@ -165,6 +165,13 @@
   font-size: 13px;
   border-radius: 10px;
 }
+.btn-share {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  border-radius: 10px;
+}
 .btn-continue {
   flex: 1;
   padding: 10px;

@@ -1,0 +1,89 @@
+<view class="page-wrap" style="background:{{theme.colors.primaryBg}};color:{{theme.colors.text}}">
+  <view class="page-header">
+    <text class="page-title">社群</text>
+    <view class="header-actions">
+      <view bindtap="goCreate" class="header-btn">✏️ 发布</view>
+    </view>
+  </view>
+  <text class="page-subtitle">发现大家的妆容搭配灵感</text>
+
+  <view class="filter-bar">
+    <scroll-view scroll-x="true" class="filter-tag-scroll">
+      <view class="filter-tag-row">
+        <block wx:if="{{selectedTags.length===0}}">
+          <text class="filter-placeholder">全部帖子</text>
+        </block>
+        <block wx:for="{{selectedTags}}" wx:for-item="t" wx:key="t">
+          <view class="filter-tag" bindtap="onRemoveFilterTag" data-tag="{{t}}">
+            <text>{{t}}</text>
+            <text class="filter-tag-x">✕</text>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+    <view bindtap="onToggleFilterPanel" class="filter-btn">{{selectedTags.length>0 ? selectedTags.length : '筛选'}}</view>
+  </view>
+
+  <scroll-view scroll-y="true" class="list-scroll">
+    <block wx:if="{{posts.length===0 && !loading}}">
+      <view class="empty-state">
+        <text class="empty-icon">🌱</text>
+        <text class="empty-text">还没有人分享</text>
+        <text class="empty-hint">快来做第一个分享搭配的人吧</text>
+        <view bindtap="goCreate" class="btn-primary" style="margin-top:12px;padding:8px 20px;font-size:13px">✏️ 发布搭配</view>
+      </view>
+    </block>
+    <block wx:if="{{loading}}">
+      <view class="loading-hint">加载中...</view>
+    </block>
+    <block wx:for="{{posts}}" wx:for-item="p" wx:key="id">
+      <view bindtap="goPost" data-id="{{p.id}}" class="post-card">
+        <view class="post-author">
+          <text class="author-avatar">👤</text>
+          <text class="author-name">{{p.author_name || '匿名用户'}}</text>
+          <text class="post-time">{{p._timeStr}}</text>
+        </view>
+        <text class="post-title">{{p.title}}</text>
+        <text wx:if="{{p.description}}" class="post-desc">{{p.description}}</text>
+        <view class="post-tags">
+          <block wx:for="{{p.tags}}" wx:for-item="t" wx:key="t">
+            <text class="post-tag">{{t}}</text>
+          </block>
+        </view>
+        <view class="post-meta">
+          <text class="post-prod-count">{{p._prodCount}} 件商品</text>
+          <text class="post-fav-count">{{p.favorite_count || 0}} ⭐</text>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+
+  <view wx:if="{{filterShow}}" bindtap="onToggleFilterPanel" class="filter-overlay"></view>
+  <view wx:if="{{filterShow}}" class="filter-panel" style="transform:translateY({{filterDragY}}px)">
+    <view class="filter-panel-handle"
+      bindtouchstart="onFilterTouchStart"
+      bindtouchmove="onFilterTouchMove"
+      bindtouchend="onFilterTouchEnd">
+      <view class="filter-handle-bar"></view>
+    </view>
+    <view class="filter-panel-header">
+      <text class="filter-panel-title">筛选条件</text>
+      <view bindtap="onToggleFilterPanel" class="filter-panel-close">✕</view>
+    </view>
+    <scroll-view scroll-y="true" class="filter-panel-body">
+      <block wx:for="{{filterCats}}" wx:for-item="cat" wx:key="key">
+        <view class="filter-cat-title">{{cat.name}}</view>
+        <view class="filter-options">
+          <block wx:for="{{cat.options}}" wx:for-item="opt" wx:key="opt">
+            <view bindtap="onToggleFilterTag" data-tag="{{opt}}"
+              class="filter-opt {{selectedTagSet[opt] ? 'filter-opt-on' : ''}}">{{opt}}</view>
+          </block>
+        </view>
+      </block>
+    </scroll-view>
+    <view class="filter-panel-actions">
+      <view bindtap="onResetFilter" class="filter-btn-reset">重置</view>
+      <view bindtap="onConfirmFilter" class="filter-btn-confirm">确定</view>
+    </view>
+  </view>
+</view>

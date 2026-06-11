@@ -2,8 +2,11 @@
   "pages": [
     "pages/checklist/checklist",
     "pages/recommend/recommend",
-    "pages/me/me",
-    "pages/cart/cart"
+    "pages/community/community",
+    "pages/post/post",
+    "pages/create/create",
+    "pages/cart/cart",
+    "pages/me/me"
   ],
   "window": {
     "navigationBarTitleText": "美妆选购小助手",
@@ -24,6 +27,7 @@
       { "pagePath": "pages/checklist/checklist", "text": "化妆清单", "iconPath": "images/checklist.png", "selectedIconPath": "images/checklist_active.png" },
       { "pagePath": "pages/recommend/recommend", "text": "智能推荐", "iconPath": "images/recommend.png", "selectedIconPath": "images/recommend_active.png" },
       { "pagePath": "pages/cart/cart", "text": "我的清单", "iconPath": "images/cart.png", "selectedIconPath": "images/cart_active.png" },
+      { "pagePath": "pages/community/community", "text": "社群", "iconPath": "images/community.png", "selectedIconPath": "images/community_active.png" },
       { "pagePath": "pages/me/me", "text": "我的", "iconPath": "images/me.png", "selectedIconPath": "images/me_active.png" }
     ]
   }

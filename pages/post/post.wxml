@@ -1,0 +1,56 @@
+<view class="page-wrap" style="background:{{theme.colors.primaryBg}};color:{{theme.colors.text}}">
+  <view class="page-header">
+    <view bindtap="goBack" class="back-btn">◀ 返回</view>
+    <text class="page-title">帖子详情</text>
+    <view class="header-right"></view>
+  </view>
+
+  <scroll-view scroll-y="true" class="content-scroll">
+    <block wx:if="{{!post}}">
+      <view class="loading-hint">加载中...</view>
+    </block>
+
+    <block wx:if="{{post}}">
+      <view class="post-section">
+        <view class="post-author">
+          <text class="author-avatar">👤</text>
+          <text class="author-name">{{post.author_name || '匿名用户'}}</text>
+          <text class="post-time">{{post._timeStr}}</text>
+        </view>
+        <text class="post-title">{{post.title}}</text>
+        <text wx:if="{{post.description}}" class="post-desc">{{post.description}}</text>
+        <view class="post-tags">
+          <block wx:for="{{post.tags}}" wx:for-item="t" wx:key="t">
+            <text class="post-tag">{{t}}</text>
+          </block>
+        </view>
+      </view>
+
+      <view class="prod-section">
+        <view class="section-title-row">
+          <text class="section-title">搭配商品 ({{post._prodCount}})</text>
+        </view>
+        <block wx:for="{{products}}" wx:for-item="item" wx:key="id">
+          <view class="prod-item">
+            <view class="prod-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+            <view class="prod-info">
+              <text class="prod-brand">{{item.brand}}</text>
+              <text class="prod-name">{{item.name}}</text>
+              <text class="prod-price">¥{{item.price}}</text>
+            </view>
+            <button bindtap="onAddToCart" data-id="{{item.id}}" class="add-cart-btn">+</button>
+          </view>
+        </block>
+        <block wx:if="{{products.length===0}}">
+          <text class="empty-hint" style="display:block;padding:16px;text-align:center">暂无商品信息</text>
+        </block>
+      </view>
+
+      <view class="action-bar">
+        <button bindtap="onToggleFav" class="{{isFavorited ? 'btn-fav-active' : 'btn-fav'}}">
+          {{isFavorited ? '⭐ 已收藏' : '🤍 收藏'}} {{post.favorite_count || 0}}
+        </button>
+      </view>
+    </block>
+  </scroll-view>
+</view>

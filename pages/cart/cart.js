@@ -156,6 +156,9 @@ Page({
     wx.showToast({ title: '已加入清单', icon: 'success' })
     this.onShow()
   },
+  goShareCommunity(){
+    wx.navigateTo({ url: '/pages/create/create' })
+  },
   goChecklist(){
     wx.switchTab({ url: '/pages/checklist/checklist' })
   },

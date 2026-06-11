@@ -1,0 +1,94 @@
+<view class="page-wrap" style="background:{{theme.colors.primaryBg}};color:{{theme.colors.text}}">
+  <view class="page-header">
+    <view bindtap="goBack" class="back-btn">◀ 返回</view>
+    <text class="page-title">发布搭配</text>
+    <view bindtap="onPublish" class="publish-btn {{canPublish ? 'publish-btn-active' : ''}}">发布</view>
+  </view>
+
+  <scroll-view scroll-y="true" class="content-scroll">
+    <view class="form-section">
+      <text class="form-label">选择商品</text>
+      <view class="tab-bar">
+        <view bindtap="onSwitchMode" data-mode="cart"
+          class="tab-item {{createMode==='cart' ? 'tab-item-active' : ''}}">从购物清单选</view>
+        <view bindtap="onSwitchMode" data-mode="custom"
+          class="tab-item {{createMode==='custom' ? 'tab-item-active' : ''}}">自定义选择</view>
+      </view>
+
+      <block wx:if="{{createMode==='cart'}}">
+        <block wx:if="{{cartItems.length===0}}">
+          <view class="empty-cart-hint">
+            <text>购物清单为空，先去添加商品吧</text>
+            <view bindtap="goChecklist" class="btn-outline" style="margin-top:8px;padding:6px 16px;font-size:12px">去化妆清单</view>
+          </view>
+        </block>
+        <block wx:for="{{cartItems}}" wx:for-item="item" wx:key="id">
+          <view bindtap="onToggleProduct" data-id="{{item.id}}" class="prod-select-item {{selectedSet[item.id] ? 'prod-selected' : ''}}">
+            <view class="prod-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+            <view class="prod-info">
+              <text class="prod-brand">{{item.brand}}</text>
+              <text class="prod-name">{{item.name}}</text>
+              <text class="prod-price">¥{{item.price}}</text>
+            </view>
+            <text class="check-icon">{{selectedSet[item.id] ? '✓' : ''}}</text>
+          </view>
+        </block>
+      </block>
+
+      <block wx:if="{{createMode==='custom'}}">
+        <input class="search-input" placeholder="搜索品牌 / 产品名 / 色号" value="{{searchQuery}}" bindinput="onSearchInput" confirm-type="search" />
+        <block wx:if="{{selectedProds.length>0}}">
+          <view class="selected-prods-bar">
+            <scroll-view scroll-x="true" class="selected-prods-scroll">
+              <view class="selected-prods-row">
+                <block wx:for="{{selectedProds}}" wx:for-item="p" wx:key="id">
+                  <view class="selected-prod-chip" bindtap="onToggleSearchResult" data-id="{{p.id}}">
+                    <text class="selected-prod-text">{{p.brand}} {{p.name}}</text>
+                    <text class="selected-prod-x">✕</text>
+                  </view>
+                </block>
+              </view>
+            </scroll-view>
+          </view>
+        </block>
+        <block wx:if="{{searchQuery && searchResults.length===0}}">
+          <view class="empty-hint" style="padding:16px;text-align:center;font-size:12px">未找到匹配商品</view>
+        </block>
+        <block wx:for="{{searchResults}}" wx:for-item="item" wx:key="id">
+          <view bindtap="onToggleSearchResult" data-id="{{item.id}}" class="prod-select-item {{selectedSet[item.id] ? 'prod-selected' : ''}}">
+            <view class="prod-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+            <view class="prod-info">
+              <text class="prod-brand">{{item.brand}}</text>
+              <text class="prod-name">{{item.name}}</text>
+              <text class="prod-price">¥{{item.price}}</text>
+            </view>
+            <text class="check-icon">{{selectedSet[item.id] ? '✓' : ''}}</text>
+          </view>
+        </block>
+      </block>
+    </view>
+
+    <view class="form-section">
+      <text class="form-label">标题</text>
+      <input class="form-input" placeholder="给这个搭配起个名字" value="{{title}}" bindinput="onTitleInput" maxlength="30" />
+    </view>
+
+    <view class="form-section">
+      <text class="form-label">描述（选填）</text>
+      <textarea class="form-textarea" placeholder="描述你的妆容搭配、使用感受..." value="{{description}}" bindinput="onDescInput" maxlength="200" />
+    </view>
+
+    <view class="form-section">
+      <view class="form-label-row">
+        <text class="form-label">标签</text>
+        <text class="form-hint">已自动识别，可手动调整</text>
+      </view>
+      <view class="tag-editor">
+        <block wx:for="{{allTagOptions}}" wx:for-item="t" wx:key="t">
+          <view bindtap="onToggleTag" data-tag="{{t}}"
+            class="tag-chip {{tagSet[t] ? 'tag-chip-on' : 'tag-chip-off'}}">{{t}}</view>
+        </block>
+      </view>
+    </view>
+  </scroll-view>
+</view>
