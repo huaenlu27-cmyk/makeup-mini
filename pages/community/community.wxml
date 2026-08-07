@@ -45,14 +45,16 @@
         </view>
         <text class="post-title">{{p.title}}</text>
         <text wx:if="{{p.description}}" class="post-desc">{{p.description}}</text>
-        <view class="post-tags">
-          <block wx:for="{{p.tags}}" wx:for-item="t" wx:key="t">
-            <text class="post-tag">{{t}}</text>
-          </block>
-        </view>
-        <view class="post-meta">
-          <text class="post-prod-count">{{p._prodCount}} 件商品</text>
-          <text class="post-fav-count">{{p.favorite_count || 0}} ⭐</text>
+        <view class="post-bottom">
+          <view class="post-tags">
+            <block wx:for="{{p.tags}}" wx:for-item="t" wx:key="t">
+              <text class="post-tag">{{t}}</text>
+            </block>
+          </view>
+          <view class="post-meta">
+            <text class="post-prod-count">{{p._prodCount}} 件</text>
+            <text class="post-fav-count">{{p.favorite_count || 0}} ⭐</text>
+          </view>
         </view>
       </view>
     </block>

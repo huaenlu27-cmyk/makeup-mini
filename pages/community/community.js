@@ -39,6 +39,7 @@ Page({
         p._prodCount = (p.product_ids && p.product_ids.length) || 0
         p._timeStr = this._fmtTime(p.created_at)
         p.author_avatar = '👤'
+        p.tags = Array.isArray(p.tags) ? p.tags : []
         return p
       }.bind(this))
       this.setData({ posts: enriched, loading: false })

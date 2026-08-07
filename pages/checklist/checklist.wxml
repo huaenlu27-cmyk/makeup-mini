@@ -79,7 +79,7 @@
                         <view class="product-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
                         <view style="flex:1;min-width:0">
                           <text class="product-brand">{{item.brand}}</text>
-                          <text class="product-name">{{item.name}}</text>
+                          <text class="product-name">{{item.name}}{{myProductSet[item.id] ? ' ✓已拥有' : ''}}</text>
                           <text class="product-price">¥{{item.price}}</text>
                         </view>
                         <button bindtap="onAddToCart" data-id="{{item.id}}" class="add-cart-btn">+</button>
@@ -111,7 +111,7 @@
                     <view class="brand-product-item">
                       <view class="brand-product-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
                       <view class="brand-product-info">
-                        <text class="brand-product-name">{{item.name}}</text>
+                        <text class="brand-product-name">{{item.name}}{{myProductSet[item.id] ? ' ✓已拥有' : ''}}</text>
                         <text class="brand-product-meta">{{item.colorName}} · ¥{{item.price}}</text>
                       </view>
                       <button bindtap="onAddToCart" data-id="{{item.id}}" class="add-cart-btn">+</button>

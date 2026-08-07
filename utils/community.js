@@ -33,10 +33,11 @@ function getPosts(filters, callback){
       if(res.statusCode >= 200 && res.statusCode < 300 && Array.isArray(res.data)){
         callback(res.data)
       } else {
+        console.log('[community] getPosts 失败 statusCode:', res.statusCode, 'data type:', typeof res.data, 'data:', JSON.stringify(res.data))
         callback([])
       }
     },
-    fail: function(){ callback([]) }
+    fail: function(e){ console.log('[community] getPosts 网络错误:', JSON.stringify(e)); callback([]) }
   })
 }
 
@@ -60,17 +61,25 @@ function getPost(postId, callback){
 
 function createPost(post, callback){
   var h = _headers()
-  if(!h){ callback(null); return }
+  if(!h){ console.log('[community] createPost 配置加载失败'); callback(null); return }
   var sb = _getSupabase()
+  console.log('[community] createPost 发起请求 data:', JSON.stringify(post))
   wx.request({
     url: sb.url + '/rest/v1/posts',
     method: 'POST',
     header: h,
     data: post,
     success: function(res){
-      callback((res.statusCode >= 200 && res.statusCode < 300 && res.data && res.data[0]) || null)
+      console.log('[community] createPost 响应 statusCode:', res.statusCode, 'data:', JSON.stringify(res.data))
+      var ok = res.statusCode >= 200 && res.statusCode < 300
+      if(ok){
+        var row = Array.isArray(res.data) ? res.data[0] : res.data
+        callback(row || true)
+      } else {
+        callback(null)
+      }
     },
-    fail: function(){ callback(null) }
+    fail: function(e){ console.log('[community] createPost 网络错误:', JSON.stringify(e)); callback(null) }
   })
 }
 

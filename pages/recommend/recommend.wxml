@@ -3,13 +3,27 @@
   <text class="page-subtitle">选择你的特征，获取专属妆容方案</text>
 
   <block wx:if="{{!hasResult}}">
-    <view class="mode-tabs">
+    <view class="mode-grid">
       <view bindtap="onTabMode" data-mode="skin"
-        class="mode-tab {{tabMode==='skin' ? 'mode-tab-active' : ''}}">根据肤色/条件</view>
+        class="mode-card {{tabMode==='skin' ? 'mode-card-active' : ''}}">
+        <text class="mode-card-title">肤色条件</text>
+        <text class="mode-card-desc">按脸型肤质推荐</text>
+      </view>
       <view bindtap="onTabMode" data-mode="style"
-        class="mode-tab {{tabMode==='style' ? 'mode-tab-active' : ''}}">根据妆容类型</view>
+        class="mode-card {{tabMode==='style' ? 'mode-card-active' : ''}}">
+        <text class="mode-card-title">妆容类型</text>
+        <text class="mode-card-desc">按风格一键生成</text>
+      </view>
       <view bindtap="onTabMode" data-mode="ai"
-        class="mode-tab {{tabMode==='ai' ? 'mode-tab-active' : ''}}">AI 智能咨询</view>
+        class="mode-card {{tabMode==='ai' ? 'mode-card-active' : ''}}">
+        <text class="mode-card-title">AI 智能咨询</text>
+        <text class="mode-card-desc">自由描述需求</text>
+      </view>
+      <view bindtap="onTabMode" data-mode="gap"
+        class="mode-card {{tabMode==='gap' ? 'mode-card-active' : ''}}">
+        <text class="mode-card-title">缺口补全</text>
+        <text class="mode-card-desc">检测缺失品类</text>
+      </view>
     </view>
 
     <block wx:if="{{tabMode==='skin'}}">
@@ -151,8 +165,38 @@
       </block>
     </block>
 
+    <block wx:if="{{tabMode==='gap'}}">
+      <view class="gap-section">
+        <text class="section-title">检测你的化妆品缺口</text>
+        <text class="gap-desc">根据你已拥有的化妆品，智能检测缺失的品类，并基于你的肤质条件推荐互补产品。</text>
+        <block wx:if="{{myProductIds.length===0}}">
+          <view class="gap-empty-hint">
+            <text class="gap-empty-icon">📦</text>
+            <text>还没有导入已有化妆品</text>
+            <text class="gap-empty-sub">先去导入你的已有化妆品</text>
+            <button bindtap="goMyProducts" class="go-import-btn">去导入 →</button>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="gap-status-row">
+            <text class="gap-has-count">已导入 {{myProductIds.length}} 件</text>
+            <button bindtap="goMyProducts" class="go-import-btn go-import-btn-sm">去导入 →</button>
+          </view>
+        </block>
+      </view>
+    </block>
+
+    <block wx:if="{{tabMode==='skin' || tabMode==='style'}}">
+      <view class="skip-owned-bar">
+        <text class="skip-owned-label">跳过已有产品</text>
+        <switch checked="{{skipOwned}}" bindchange="onToggleSkipOwned" color="var(--primary)" />
+      </view>
+    </block>
+
     <view wx:if="{{tabMode!=='ai'}}" class="gen-btn-wrap">
-      <button bindtap="onGenerate" loading="{{genLoading}}" disabled="{{genLoading}}" class="btn-primary btn-gen">✨ 生成推荐方案</button>
+      <button bindtap="onGenerate" loading="{{genLoading}}" disabled="{{genLoading}}" class="btn-primary btn-gen">
+        {{tabMode==='gap' ? '🔍 检测缺口' : '✨ 生成推荐方案'}}
+      </button>
     </view>
   </block>
 
@@ -214,9 +258,11 @@
               <view class="rec-item-tags">
                 <text class="tag">{{item.colorName}}</text>
                 <text class="rec-item-price">¥{{item.price}}</text>
+                <text wx:if="{{myProductSet[item.id]}}" class="owned-tag">已拥有</text>
               </view>
             </view>
-            <button bindtap="onAddToCart" data-id="{{item.id}}" class="add-cart-btn">+</button>
+            <button wx:if="{{!myProductSet[item.id]}}" bindtap="onAddToCart" data-id="{{item.id}}" class="add-cart-btn">+</button>
+            <text wx:else class="owned-mark">✓</text>
           </view>
         </block>
       </view>

@@ -5,6 +5,7 @@
     "pages/community/community",
     "pages/post/post",
     "pages/create/create",
+    "pages/myproducts/myproducts",
     "pages/cart/cart",
     "pages/me/me"
   ],

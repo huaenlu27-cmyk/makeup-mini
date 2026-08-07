@@ -32,7 +32,8 @@ Page({
     expandedBrand: '',
     expandedBrandItems: [],
     searchKeyword: '',
-    contentListHeight: 0
+    contentListHeight: 0,
+    myProductSet: {}
   },
   onLoad(){
     var app = getApp()
@@ -52,6 +53,7 @@ Page({
     if(theme) this.setData({ theme: theme })
     this._updateBadge()
     this._calcContentHeight()
+    this._loadMySet()
   },
   _getProducts(){
     var app = getApp()
@@ -240,6 +242,12 @@ Page({
       var avaHeight = windowHeight - topHeight - 32
       self.setData({ contentListHeight: Math.max(avaHeight, 200) })
     }).exec()
+  },
+  _loadMySet(){
+    var mp = wx.getStorageSync('myProducts') || []
+    var set = {}
+    for(var i = 0; i < mp.length; i++){ set[mp[i].id] = true }
+    this.setData({ myProductSet: set })
   },
   setViewMode(e){
     this.setData({ viewMode: e.currentTarget.dataset.mode, expandedKey: '' })

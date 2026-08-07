@@ -44,6 +44,15 @@ function findByIds(prods, ids){
   return r
 }
 
+function _getMyProductIds(){
+  var mp = wx.getStorageSync('myProducts') || []
+  var ids = []
+  for(var i = 0; i < mp.length; i++){ ids.push(mp[i].id) }
+  var set = {}
+  for(var i = 0; i < ids.length; i++){ set[ids[i]] = true }
+  return { ids: ids, set: set }
+}
+
 Page({
   data: {
     faceShapes: taxonomy.face_shapes || [],
@@ -81,7 +90,10 @@ Page({
       { key:'western', name:'欧美妆', icon:'🗽' },
       { key:'thai', name:'泰妆', icon:'🌴' },
       { key:'french', name:'法式慵懒', icon:'🥐' }
-    ]
+    ],
+    myProductSet: {},
+    myProductIds: [],
+    skipOwned: false
   },
   onLoad(){
     var savedMode = wx.getStorageSync('_savedTabMode') || 'skin'
@@ -95,9 +107,11 @@ Page({
     if(theme) this.setData({ theme: theme })
     this._loadProfile()
     this._loadAIHistory()
+    this._loadMyProducts()
   },
   onShow(){
     this._updateBadge()
+    this._loadMyProducts()
     var app = getApp()
     var theme = (app && app.globalData && app.globalData.theme) || null
     if(theme) this.setData({ theme: theme })
@@ -133,6 +147,35 @@ Page({
     for(var i = 0; i < shapes.length; i++){
       if(shapes[i].key === this.data.selFace){ this.setData({ currentFaceDetail: shapes[i] }); break }
     }
+  },
+  _loadMyProducts(){
+    var mp = _getMyProductIds()
+    var prefs = wx.getStorageSync('recommendPrefs') || {}
+    this.setData({ myProductSet: mp.set, myProductIds: mp.ids, skipOwned: prefs.skipOwned || false })
+  },
+  onToggleSkipOwned(e){
+    var val = e.detail.value
+    this.setData({ skipOwned: val })
+    wx.setStorageSync('recommendPrefs', { skipOwned: val })
+  },
+  goMyProducts(){
+    wx.navigateTo({ url: '/pages/myproducts/myproducts' })
+  },
+  _filterOwned(groups){
+    if(!this.data.skipOwned) return groups
+    var set = this.data.myProductSet
+    var result = []
+    for(var g = 0; g < groups.length; g++){
+      var items = groups[g].items || []
+      var filtered = []
+      for(var i = 0; i < items.length; i++){
+        if(!set[items[i].id]) filtered.push(items[i])
+      }
+      if(filtered.length > 0){
+        result.push({ title: groups[g].title, icon: groups[g].icon, items: filtered })
+      }
+    }
+    return result
   },
   onShowTip(e){
     var key = e.currentTarget.dataset.key
@@ -186,6 +229,8 @@ Page({
     }
     if(this.data.tabMode === 'style'){
       this._genByStyle(prods)
+    } else if(this.data.tabMode === 'gap'){
+      this._genGap(prods)
     } else {
       this._genBySkin(prods)
     }
@@ -265,6 +310,8 @@ Page({
       groups.push({ title:'修容 & 高光', icon:'✨', items:ctItems })
     }
 
+    groups = this._filterOwned(groups)
+
     var tip = ''
     var shapes = taxonomy.face_shapes || []
     for(var i = 0; i < shapes.length; i++){
@@ -300,7 +347,96 @@ Page({
       }
     }
 
+    groups = this._filterOwned(groups)
+
     var newResults = { groups: groups, styleInfo: styleInfo }
+    this.setData({
+      results: newResults,
+      hasResult: true,
+      genKey: this.data.genKey + 1,
+      genLoading: false
+    })
+    wx.setStorageSync('_lastResults', { results: newResults, tabMode: this.data.tabMode })
+  },
+  _genGap(prods){
+    var mp = this.data.myProductIds
+    if(mp.length === 0){
+      this.setData({ genLoading: false })
+      wx.showToast({ title: '请先在化妆品库导入已有产品', icon: 'none' })
+      return
+    }
+    var ownedCats = {}
+    var mpAll = wx.getStorageSync('myProducts') || []
+    for(var i = 0; i < mpAll.length; i++){
+      var cat = mpAll[i].category || '其他'
+      var shortCat = cat.split('/')[0].trim()
+      ownedCats[shortCat] = true
+    }
+    var catOrder = (cfg && cfg.CAT_ORDER) || []
+    var catIcon = (cfg && cfg.CAT_ICON) || {}
+    var missingCats = []
+    for(var c = 0; c < catOrder.length; c++){
+      var sc = catOrder[c].split('/')[0].trim()
+      if(!ownedCats[sc]){
+        missingCats.push({ category: catOrder[c], short: sc })
+      }
+    }
+    if(missingCats.length === 0){
+      this.setData({ genLoading: false })
+      wx.showToast({ title: '你已经拥有大部分品类，很棒！', icon: 'none' })
+      return
+    }
+    var dk = getDepthKey(this.data.selDepth)
+    var uk = getUTKey(this.data.selUndertone)
+    var ok = getOccKey(this.data.selOccasion)
+    var sk = this.data.selSkinType || 'normal'
+    var groups = []
+    var self = this
+    var catToRule = {
+      '粉底液': function(){ var ids = (rules.foundation_by_skin || {})[sk] || []; return findByIds(prods, ids) },
+      '粉饼': function(){ return findByIds(prods, (rules.powder_by_skin || {})[sk] || []) },
+      '定妆喷雾': function(){ return findByIds(prods, (rules.setting_by_skin || {})[sk] || []) },
+      '隔离': function(){ return findByIds(prods, (rules.primer_by_skin || {})[sk] || []) },
+      '遮瑕': function(){ return findByIds(prods, (rules.concealer_by_skin || {})[sk] || []) },
+      '防晒': function(){ return findByIds(prods, (rules.sunscreen_by_skin || {})[sk] || []) },
+      '腮红': function(){
+        var bMap = (rules.blush_by_undertone || {})
+        var bSkinMap = (rules.blush_by_skin || {})
+        var ids = (bMap[uk] || []).slice()
+        var bSkinIds = bSkinMap[sk] || []
+        for(var i = 0; i < bSkinIds.length; i++){ if(ids.indexOf(bSkinIds[i]) === -1) ids.push(bSkinIds[i]) }
+        return findByIds(prods, ids)
+      },
+      '高光': function(){ return findByIds(prods, (rules.highlight_by_undertone || {})[uk] || []) },
+      '修容': function(){ return findByIds(prods, (rules.contour_by_face_shape || {})[self.data.selFace] || []) },
+      '眼影': function(){ return findByIds(prods, (rules.eyeshadow_by_occasion || {})[ok] || []) },
+      '口红': function(){
+        var lipIds = (rules.lip_by_undertone_occasion || {})[uk+'_'+ok] || []
+        return findByIds(prods, lipIds)
+      }
+    }
+    for(var m = 0; m < missingCats.length; m++){
+      var mc = missingCats[m]
+      var ruleFn = null
+      var catKeys = Object.keys(catToRule)
+      for(var k = 0; k < catKeys.length; k++){
+        if(mc.short.indexOf(catKeys[k]) > -1 || mc.category.indexOf(catKeys[k]) > -1){
+          ruleFn = catToRule[catKeys[k]]
+          break
+        }
+      }
+      if(!ruleFn) continue
+      var items = ruleFn()
+      if(items.length > 0){
+        groups.push({
+          title: '缺少 ' + mc.short.replace(/[/（].*/,'') + ' → 试试这些',
+          icon: catIcon[mc.category] || '📦',
+          items: items,
+          isGap: true
+        })
+      }
+    }
+    var newResults = { groups: groups, isGapResult: true }
     this.setData({
       results: newResults,
       hasResult: true,
@@ -593,8 +729,16 @@ Page({
     var skinTypeMap = { normal:'中性皮', dry:'干皮', oily:'油皮', combination:'混油皮', sensitive:'干敏皮', acne_prone:'痘痘肌' }
     var skinTypeName = skinTypeMap[this.data.selSkinType] || this.data.selSkinType
     var productJSON = JSON.stringify(list, null, 2)
+    var ownedInfo = ''
+    var mpAll = wx.getStorageSync('myProducts') || []
+    if(mpAll.length > 0){
+      var ownedList = mpAll.map(function(p){
+        return p.category + ': ' + p.brand + ' ' + p.name + ' (' + (p.colorName || '') + ')'
+      }).join('\n')
+      ownedInfo = '\n\n用户已拥有以下化妆品（请勿重复推荐，优先推荐用户缺少的品类）：\n' + ownedList
+    }
     return '你是一个专业的美妆顾问。以下是可推荐的商品库：\n' + productJSON + '\n\n' +
-      '用户当前已选择肤质为: ' + skinTypeName + '\n\n' +
+      '用户当前已选择肤质为: ' + skinTypeName + ownedInfo + '\n\n' +
       '请根据用户的描述，从上述商品库中选择最合适的商品，并以以下 JSON 格式回复（不要包含其他文字）：\n' +
       '{\n  "title": "通勤自然妆推荐",\n  "advice": "详细的化妆建议（用中文）",\n  "product_ids": ["p04", "p09"]\n}\n\n' +
       '要求：\n' +
@@ -604,6 +748,7 @@ Page({
       '- 重要：advice 中提到的每一个商品都必须出现在 product_ids 中，不可遗漏\n' +
       '- 如果用户提到了预算、肤色、肤质、场合等信息，优先匹配\n' +
       '- 用户肤质为 ' + skinTypeName + '，推荐时优先考虑适合该肤质的产品\n' +
+      '- 如果用户已有某些品类的产品，就不需要再推荐该品类，而是推荐互补的品类\n' +
       '- 如果没有合适的商品，product_ids 返回空数组'
   },
   _genByAI(content, prods){

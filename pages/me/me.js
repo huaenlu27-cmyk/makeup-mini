@@ -206,5 +206,8 @@ Page({
   },
   goMyFavorites(){
     wx.switchTab({ url: '/pages/community/community' })
+  },
+  goMyProducts(){
+    wx.navigateTo({ url: '/pages/myproducts/myproducts' })
   }
 })

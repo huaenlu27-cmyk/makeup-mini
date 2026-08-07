@@ -27,7 +27,7 @@
             <view class="prod-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
             <view class="prod-info">
               <text class="prod-brand">{{item.brand}}</text>
-              <text class="prod-name">{{item.name}}</text>
+              <text class="prod-name">{{item.name}}{{myProductSet[item.id] ? ' ✓已拥有' : ''}}</text>
               <text class="prod-price">¥{{item.price}}</text>
             </view>
             <text class="check-icon">{{selectedSet[item.id] ? '✓' : ''}}</text>
@@ -59,7 +59,7 @@
             <view class="prod-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
             <view class="prod-info">
               <text class="prod-brand">{{item.brand}}</text>
-              <text class="prod-name">{{item.name}}</text>
+              <text class="prod-name">{{item.name}}{{myProductSet[item.id] ? ' ✓已拥有' : ''}}</text>
               <text class="prod-price">¥{{item.price}}</text>
             </view>
             <text class="check-icon">{{selectedSet[item.id] ? '✓' : ''}}</text>

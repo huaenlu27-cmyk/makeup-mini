@@ -1,5 +1,5 @@
 .page-wrap {
-  padding: 20px 16px 90px;
+  padding: 40rpx 32rpx 180rpx;
   min-height: 100vh;
   box-sizing: border-box;
   background: var(--bg);
@@ -68,35 +68,21 @@
   font-size: 11px;
   color: var(--muted);
 }
-.profile-fields {
+.profile-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 14px;
 }
-.profile-row {
-  display: flex;
+.profile-chip {
+  display: inline-flex;
   align-items: center;
-  padding: 10px 0;
-  border-top: 1px solid var(--bg);
-}
-.profile-row:first-child {
-  border-top: none;
-}
-.row-label {
-  font-size: 13px;
-  color: var(--muted);
-  width: 72px;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-.row-value {
-  flex: 1;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-}
-.row-arrow {
+  padding: 6px 12px;
+  background: var(--chip-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 12px;
-  color: var(--muted);
-  margin-left: 8px;
+  color: var(--text);
 }
 .btn-full {
   width: 100%;
@@ -139,6 +125,9 @@
   font-weight: 500;
   color: var(--text);
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .recent-meta {
   font-size: 11px;

@@ -1,0 +1,154 @@
+<view class="page-wrap" style="background:{{theme.colors.primaryBg}};color:{{theme.colors.text}}">
+  <view class="page-header">
+    <view bindtap="goBack" class="back-btn">◀ 返回</view>
+    <text class="page-title">我的化妆品库</text>
+    <text class="header-count">共 {{totalCount}} 件</text>
+  </view>
+
+  <view class="tab-bar">
+    <view bindtap="onSwitchTab" data-mode="catalog"
+      class="tab-item {{tabMode==='catalog' ? 'tab-item-active' : ''}}">从产品库选</view>
+    <view bindtap="onSwitchTab" data-mode="manual"
+      class="tab-item {{tabMode==='manual' ? 'tab-item-active' : ''}}">手动添加</view>
+    <view bindtap="onSwitchTab" data-mode="mylist"
+      class="tab-item {{tabMode==='mylist' ? 'tab-item-active' : ''}}">已导入 {{totalCount}}</view>
+  </view>
+
+  <block wx:if="{{tabMode==='catalog'}}">
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜索品牌 / 产品名 / 色号" value="{{searchQuery}}" bindinput="onSearchInput" confirm-type="search" />
+    </view>
+    <scroll-view scroll-x="true" class="cat-scroll">
+      <view class="cat-row">
+        <view bindtap="onSelectCat" data-cat="全部"
+          class="cat-chip {{activeCat==='全部' ? 'cat-chip-active' : ''}}">全部</view>
+        <block wx:for="{{cats}}" wx:for-item="c" wx:key="c">
+          <view bindtap="onSelectCat" data-cat="{{c}}"
+            class="cat-chip {{activeCat===c ? 'cat-chip-active' : ''}}">{{c}}</view>
+        </block>
+      </view>
+    </scroll-view>
+    <scroll-view scroll-y="true" class="content-scroll">
+      <block wx:if="{{filteredProducts.length===0}}">
+        <view class="empty-hint">该分类下暂无产品</view>
+      </block>
+      <block wx:for="{{filteredProducts}}" wx:for-item="item" wx:key="id">
+        <view bindtap="onToggleProduct" data-id="{{item.id}}"
+          class="prod-select-item {{mySet[item.id] ? 'prod-owned' : ''}} {{selectedSet[item.id] ? 'prod-selected' : ''}}">
+          <view class="prod-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+          <view class="prod-info">
+            <text class="prod-brand">{{item.brand}}</text>
+            <text class="prod-name">{{item.name}}</text>
+            <text class="prod-price">¥{{item.price}}</text>
+          </view>
+          <block wx:if="{{mySet[item.id]}}">
+            <text class="owned-badge">已拥有</text>
+          </block>
+          <block wx:elif="{{selectedSet[item.id]}}">
+            <text class="check-icon">✓</text>
+          </block>
+        </view>
+      </block>
+    </scroll-view>
+    <view wx:if="{{selectedIds.length>0}}" class="bottom-bar">
+      <text class="bottom-count">已选 {{selectedIds.length}} 件</text>
+      <view bindtap="onImport" class="bottom-btn btn-primary">导入</view>
+    </view>
+  </block>
+
+  <block wx:if="{{tabMode==='manual'}}">
+    <scroll-view scroll-y="true" class="content-scroll">
+      <view class="form-section">
+        <text class="form-label">分类 <text class="required">*</text></text>
+        <input class="form-input" placeholder="搜索分类，如 口红、粉底液..." value="{{catSearchQuery}}" 
+          bindinput="onManualCatSearch" bindfocus="onFocusCat" maxlength="20" />
+        <block wx:if="{{filteredCats.length>0 && manualCategory !== catSearchQuery}}">
+          <view class="cat-dropdown">
+            <block wx:for="{{filteredCats}}" wx:for-item="c" wx:key="c">
+              <view bindtap="onSelectManualCat" data-cat="{{c}}" class="cat-dropdown-item">{{c}}</view>
+            </block>
+          </view>
+        </block>
+        <view wx:if="{{manualCategory}}" class="selected-cat-tag">
+          <text>{{manualCategory}}</text>
+        </view>
+      </view>
+      <view class="form-section">
+        <text class="form-label">品牌 <text class="required">*</text></text>
+        <input class="form-input" placeholder="例如：MAC" value="{{manualBrand}}" bindinput="onManualBrand" maxlength="30" />
+      </view>
+      <view class="form-section">
+        <text class="form-label">产品名 <text class="required">*</text></text>
+        <input class="form-input" placeholder="例如：子弹头口红 Chili" value="{{manualName}}" bindinput="onManualName" maxlength="50" />
+      </view>
+
+      <block wx:if="{{matchResults.length>0}}">
+        <view class="form-section">
+          <text class="form-label">🔍 匹配到以下产品，点击自动填充</text>
+          <block wx:for="{{matchResults}}" wx:for-item="m" wx:key="product.id">
+            <view bindtap="onSelectMatch" data-item="{{m.product}}" class="match-item">
+              <view class="match-swatch" style="background:{{m.product.hex || '#f4f4f4'}}"></view>
+              <view class="match-info">
+                <text class="match-brand">{{m.product.brand}} {{m.product.name}}</text>
+                <text class="match-meta">{{m.product.category}} · {{m.product.colorName}}</text>
+              </view>
+              <text class="match-arrow">→</text>
+            </view>
+          </block>
+        </view>
+      </block>
+
+      <block wx:if="{{manualHex}}">
+        <view class="form-section">
+          <text class="form-label">已选色号</text>
+          <view class="picked-color-row">
+            <view class="picked-swatch" style="background:{{manualHex}}"></view>
+            <view>
+              <text class="picked-name">{{manualColorName || '自定义'}}</text>
+              <text class="picked-hex">{{manualHex}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <block wx:if="{{palette && palette.length>0 && !manualHex}}">
+        <view class="form-section">
+          <text class="form-label">🎨 选择色号</text>
+          <view class="color-palette">
+            <block wx:for="{{palette}}" wx:for-item="c" wx:key="hex">
+              <view bindtap="onSelectColor" data-hex="{{c.hex}}" data-name="{{c.name}}" class="color-chip">
+                <view class="color-swatch" style="background:{{c.hex}}"></view>
+                <text class="color-name">{{c.name}}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+
+      <button bindtap="onManualSubmit" class="btn-primary btn-full" disabled="{{!manualBrand || !manualName || !manualCategory}}">添加</button>
+    </scroll-view>
+  </block>
+
+  <block wx:if="{{tabMode==='mylist'}}">
+    <scroll-view scroll-y="true" class="content-scroll">
+      <block wx:if="{{myProducts.length===0}}">
+        <view class="empty-hint">
+          <text class="empty-icon">📦</text>
+          <text>还没有导入化妆品</text>
+          <text class="empty-sub">从产品库选择或手动添加你的已有化妆品</text>
+        </view>
+      </block>
+      <block wx:for="{{myProducts}}" wx:for-item="item" wx:key="id">
+        <view class="my-item">
+          <view class="prod-swatch" style="background:{{item.hex || '#f4f4f4'}}"></view>
+          <view class="prod-info">
+            <text class="prod-brand">{{item.from==='manual' ? '(手动)' : ''}} {{item.brand}}</text>
+            <text class="prod-name">{{item.name}}</text>
+            <text class="prod-meta">{{item.category}} {{item.colorName}}</text>
+          </view>
+          <view bindtap="onRemoveMyProduct" data-id="{{item.id}}" class="remove-btn">✕</view>
+        </view>
+      </block>
+    </scroll-view>
+  </block>
+</view>

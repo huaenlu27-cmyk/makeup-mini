@@ -43,7 +43,8 @@ Page({
     createMode: 'cart',
     searchQuery: '',
     searchResults: [],
-    allProducts: []
+    allProducts: [],
+    myProductSet: {}
   },
   onLoad(){
     var app = getApp()
@@ -52,7 +53,7 @@ Page({
     this._loadCart()
     this._loadAllProducts()
   },
-  onShow(){ this._loadCart() },
+  onShow(){ this._loadCart(); this._loadMySet() },
   _loadCart(){
     var items = wx.getStorageSync('cart') || []
     this.setData({ cartItems: items })
@@ -64,6 +65,12 @@ Page({
       try{ prods = require('../../data/products') }catch(e){}
     }
     this.setData({ allProducts: prods })
+  },
+  _loadMySet(){
+    var mp = wx.getStorageSync('myProducts') || []
+    var set = {}
+    for(var i = 0; i < mp.length; i++){ set[mp[i].id] = true }
+    this.setData({ myProductSet: set })
   },
   _computeSets(){
     var selSet = {}
@@ -167,7 +174,8 @@ Page({
   },
   onPublish(){
     if(!this.data.canPublish) return
-    var userId = community ? community.getUserId() : 'anon'
+    if(!community){ wx.showToast({ title: '社群模块未初始化', icon: 'none' }); return }
+    var userId = community.getUserId()
     var profile = wx.getStorageSync('userProfile') || {}
     var post = {
       author_id: userId,
@@ -177,8 +185,10 @@ Page({
       product_ids: this.data.selectedIds,
       tags: this.data.tags
     }
+    console.log('[create] 即将发布 post:', JSON.stringify(post))
     wx.showLoading({ title: '发布中...' })
     community.createPost(post, function(res){
+      console.log('[create] createPost 回调结果:', JSON.stringify(res))
       wx.hideLoading()
       if(res){
         wx.showToast({ title: '发布成功', icon: 'success' })

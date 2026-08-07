@@ -11,41 +11,21 @@
     <view class="section-title-row">
       <text class="section-title">肤色档案</text>
     </view>
-    <view wx:if="{{profile}}" class="profile-fields">
+    <view wx:if="{{profile}}" class="profile-chips">
       <picker mode="selector" range="{{faceShapeNames}}" value="{{faceShapeIndex}}" bindchange="onPickerFace">
-        <view class="profile-row">
-          <text class="row-label">脸型</text>
-          <view class="row-value">{{profile.faceShapeName || profile.faceShape}}</view>
-          <text class="row-arrow">▸</text>
-        </view>
+        <view class="profile-chip">脸型: {{profile.faceShapeName || profile.faceShape}} ▾</view>
       </picker>
       <picker mode="selector" range="{{depthNames}}" value="{{depthIndex}}" bindchange="onPickerDepth">
-        <view class="profile-row">
-          <text class="row-label">肤色深浅</text>
-          <view class="row-value">{{profile.depthName || profile.depth}}</view>
-          <text class="row-arrow">▸</text>
-        </view>
+        <view class="profile-chip">肤色深浅: {{profile.depthName || profile.depth}} ▾</view>
       </picker>
       <picker mode="selector" range="{{undertoneNames}}" value="{{undertoneIndex}}" bindchange="onPickerUndertone">
-        <view class="profile-row">
-          <text class="row-label">肤色基调</text>
-          <view class="row-value">{{profile.undertoneName || profile.undertone}}</view>
-          <text class="row-arrow">▸</text>
-        </view>
+        <view class="profile-chip">基调: {{profile.undertoneName || profile.undertone}} ▾</view>
       </picker>
       <picker mode="selector" range="{{occasionNames}}" value="{{occasionIndex}}" bindchange="onPickerOccasion">
-        <view class="profile-row">
-          <text class="row-label">场景</text>
-          <view class="row-value">{{profile.occasionName || profile.occasion}}</view>
-          <text class="row-arrow">▸</text>
-        </view>
+        <view class="profile-chip">场景: {{profile.occasionName || profile.occasion}} ▾</view>
       </picker>
       <picker mode="selector" range="{{skinTypeNames}}" value="{{skinTypeIndex}}" bindchange="onPickerSkinType">
-        <view class="profile-row">
-          <text class="row-label">肤质</text>
-          <view class="row-value">{{profile.skinTypeName || profile.skinType}}</view>
-          <text class="row-arrow">▸</text>
-        </view>
+        <view class="profile-chip">肤质: {{profile.skinTypeName || profile.skinType}} ▾</view>
       </picker>
     </view>
     <button bindtap="goRecommend" class="btn-primary btn-full">去生成推荐方案</button>
@@ -58,6 +38,13 @@
       <picker mode="selector" range="{{budgetOptions}}" value="{{budgetIndex}}" bindchange="onBudgetChange">
         <view class="picker-chip">{{budgetOptions[budgetIndex]}}</view>
       </picker>
+    </view>
+  </view>
+
+  <view bindtap="goMyProducts" class="section-card link-card">
+    <view class="profile-row">
+      <text class="row-label">📦 我的化妆品库</text>
+      <text class="row-arrow">▸</text>
     </view>
   </view>
 
